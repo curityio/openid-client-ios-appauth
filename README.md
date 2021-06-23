@@ -1,2 +1,2 @@
 # ios-appauth-demo-app
-OpenID Connect integration in a Single Activity App
+OpenID Connect integration in a SwiftUI App
