@@ -14,9 +14,10 @@
 // limitations under the License.
 //
 
-import Foundation
-import SwiftCoroutine
+import AppAuth
 
-class MainViewModel: ObservableObject {
-    var appauth = AppAuthHandler(config: ApplicationConfig())
+struct ApplicationStateManager {
+    
+    static var metadata: OIDServiceConfiguration? = nil
+    static var registrationResponse: OIDRegistrationResponse? = nil
 }

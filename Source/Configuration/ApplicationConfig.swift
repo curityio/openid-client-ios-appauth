@@ -17,8 +17,8 @@
 //
 
 struct ApplicationConfig {
-    static let issuer = "https://7c4999265235.eu.ngrok.io/oauth/v2/oauth-anonymous"
-    static let redirectUri = "io.curity.client:/callback"
-    static let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
-    static let scope = "openid profile"
+    let issuer = "https://7c4999265235.eu.ngrok.io/oauth/v2/oauth-anonymous"
+    let redirectUri = "io.curity.client:/callback"
+    let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
+    let scope = "openid profile"
 }

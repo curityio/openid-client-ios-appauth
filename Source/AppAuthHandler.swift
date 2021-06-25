@@ -19,33 +19,92 @@ import SwiftCoroutine
 
 class AppAuthHandler {
     
-    func fetchMetadata(issuer: String) throws -> CoFuture<OIDServiceConfiguration> {
+    private let config: ApplicationConfig
+    
+    init(config: ApplicationConfig) {
+        self.config = config
+    }
+    
+    func fetchMetadata() throws -> CoFuture<OIDServiceConfiguration> {
         
         let promise = CoPromise<OIDServiceConfiguration>()
         
-        guard let issuerUrl = URL(string: issuer) else {
-
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The issuer URL could not be parsed")
-            promise.fail(error)
+        let (issuerUrl, parseError) = getUrl(value: config.issuer)
+        if issuerUrl == nil {
+            promise.fail(parseError!)
             return promise
         }
 
-        OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUrl) { metadata, ex in
+        OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUrl!) { metadata, ex in
 
-                if metadata != nil {
+            if metadata != nil {
 
-                    Logger.info(data: "Discovery document retrieved successfully")
-                    Logger.debug(data: metadata.debugDescription)
-                    promise.success(metadata!)
+                Logger.info(data: "Discovery document retrieved successfully")
+                Logger.debug(data: metadata.debugDescription)
+                promise.success(metadata!)
 
-                } else {
+            } else {
 
-                    let error = self.createAuthorizationError(title: "Metadata Download Error", ex: ex)
-                    promise.fail(error)
-                }
+                let error = self.createAuthorizationError(title: "Metadata Download Error", ex: ex)
+                promise.fail(error)
+            }
         }
         
         return promise
+    }
+    
+    func registerClient(metadata: OIDServiceConfiguration) -> CoFuture<OIDRegistrationResponse> {
+        
+        let promise = CoPromise<OIDRegistrationResponse>()
+        
+        let (redirectUri, parseError) = getUrl(value: self.config.redirectUri)
+        if redirectUri == nil {
+            promise.fail(parseError!)
+            return promise
+        }
+        
+        var extraParams = [String: String]()
+        extraParams["scope"] = self.config.scope
+        extraParams["requires_consent"] = "false"
+        extraParams["post_logout_redirect_uris"] = self.config.postLogoutRedirectUri
+        
+        let nonTemplatizedRequest = OIDRegistrationRequest(
+            configuration: metadata,
+            redirectURIs: [redirectUri!],
+            responseTypes: nil,
+            grantTypes: [OIDGrantTypeAuthorizationCode],
+            subjectType: nil,
+            tokenEndpointAuthMethod: nil,
+            additionalParameters: extraParams)
+        
+        OIDAuthorizationService.perform(nonTemplatizedRequest) { response, ex in
+            
+            if response != nil {
+                
+                let registrationResponse = response!
+                Logger.info(data: "Registration data retrieved successfully")
+                Logger.debug(data: "ID: \(registrationResponse.clientID), Secret: \(String(describing: registrationResponse.clientSecret))")
+                promise.success(registrationResponse)
+
+            } else {
+                
+                let error = self.createAuthorizationError(title: "Registration Error", ex: ex)
+                promise.fail(error)
+            }
+        }
+        
+        return promise
+    }
+    
+    private func getUrl(value: String) -> (URL?, Error?) {
+        
+        guard let url = URL(string: value) else {
+
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The URL \(value) could not be parsed")
+            return (nil, error)
+        }
+        
+        return (url, nil)
     }
     
     private func createAuthorizationError(title: String, ex: Error?) -> ApplicationError {

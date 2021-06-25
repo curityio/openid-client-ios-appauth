@@ -1,19 +1,15 @@
-1. Get details out of NSError
-   Handle non ApplicationError exceptions
-
-2. Result of call to 'await' is unused in UnauthenticatedViewModel
-   Get dynamic client registration working
-
-3. Complete the ApplicationStateManager and authState setup
-
-4. Get login start working and showing ASWebAuthenticationSession
+1. Get login start working and showing ASWebAuthenticationSession
    Handle cancellation case
 
-5. Get login completion working and store tokens in auth state
+2. Get login completion working and store tokens in auth state
    Move to a new empty view
 
-6. Get the new view rendering
+3. Implement the new view operations
+   Get token refresh working
+   Get end session working
 
-7. Get token refresh working
-
-8. Get end session working
+ANDROID / BOTH
+--------------
+Pass ApplicationConfig into constructor of AppAuthHandler
+Only update ApplicationStateManager on a single thread and ensure safe
+Test on supported versions and real devices, including changing orientation
