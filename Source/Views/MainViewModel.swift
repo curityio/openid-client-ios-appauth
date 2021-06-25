@@ -14,14 +14,10 @@
 // limitations under the License.
 //
 
-import SwiftUI
+import Foundation
+import SwiftCoroutine
 
-@main
-struct DemoApp: App {
+class MainViewModel: ObservableObject {
     
-    var body: some Scene {
-        WindowGroup {
-            MainView(model: MainViewModel())
-        }
-    }
+    var appauth = AppAuthHandler()
 }

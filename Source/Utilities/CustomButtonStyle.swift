@@ -18,7 +18,7 @@ import SwiftUI
 
 struct CustomButtonStyle: ButtonStyle {
     
-    private var disabled: Bool
+    private let disabled: Bool
 
     init (disabled: Bool) {
         self.disabled = disabled
@@ -31,6 +31,8 @@ struct CustomButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .background(Color("PrimaryDark"))
             .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+            .opacity(self.disabled ? 0.5 : 1.0)
             .cornerRadius(8)
+            .disabled(self.disabled)
     }
 }

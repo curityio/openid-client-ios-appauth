@@ -14,14 +14,11 @@
 // limitations under the License.
 //
 
-import SwiftUI
-
-@main
-struct DemoApp: App {
+class ApplicationError: Error {
     
-    var body: some Scene {
-        WindowGroup {
-            MainView(model: MainViewModel())
-        }
+    var area: String
+    
+    init(area: String) {
+        self.area = area
     }
 }

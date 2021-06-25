@@ -3,13 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		280AFDE12685D3150063EAD6 /* UnauthenticatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */; };
 		280AFDE42685D4BD0063EAD6 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */; };
 		280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 280AFDE92685EA180063EAD6 /* Localizable.strings */; };
+		280AFDED2685EB9C0063EAD6 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 280AFDEC2685EB9C0063EAD6 /* AppAuth */; };
+		280AFDF02685EBB90063EAD6 /* SwiftCoroutine in Frameworks */ = {isa = PBXBuildFile; productRef = 280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */; };
+		280AFDF32685EDE40063EAD6 /* AppAuthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF22685EDE40063EAD6 /* AppAuthHandler.swift */; };
+		280AFDF52685EE8D0063EAD6 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 280AFDF42685EE8D0063EAD6 /* TODO.txt */; };
+		280AFDF72685F09E0063EAD6 /* UnauthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */; };
+		280AFDFA2685F2BC0063EAD6 /* ApplicationConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF92685F2BC0063EAD6 /* ApplicationConfig.swift */; };
+		280AFDFD2685F4060063EAD6 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDFC2685F4060063EAD6 /* MainViewModel.swift */; };
+		280AFE002685FD670063EAD6 /* ApplicationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDFF2685FD670063EAD6 /* ApplicationError.swift */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
 		28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B6C4F02685CC3F00241CE3 /* Assets.xcassets */; };
@@ -19,6 +27,12 @@
 		280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedView.swift; sourceTree = "<group>"; };
 		280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
 		280AFDE92685EA180063EAD6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		280AFDF22685EDE40063EAD6 /* AppAuthHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAuthHandler.swift; sourceTree = "<group>"; };
+		280AFDF42685EE8D0063EAD6 /* TODO.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
+		280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedViewModel.swift; sourceTree = "<group>"; };
+		280AFDF92685F2BC0063EAD6 /* ApplicationConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationConfig.swift; sourceTree = "<group>"; };
+		280AFDFC2685F4060063EAD6 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		280AFDFF2685FD670063EAD6 /* ApplicationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationError.swift; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -31,6 +45,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				280AFDED2685EB9C0063EAD6 /* AppAuth in Frameworks */,
+				280AFDF02685EBB90063EAD6 /* SwiftCoroutine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,9 +62,45 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		280AFDF12685EDC80063EAD6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				280AFDFB2685F3D50063EAD6 /* Unauthenticated */,
+				28B6C4EE2685CC3E00241CE3 /* MainView.swift */,
+				280AFDFC2685F4060063EAD6 /* MainViewModel.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		280AFDF82685F2A40063EAD6 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				280AFDF92685F2BC0063EAD6 /* ApplicationConfig.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		280AFDFB2685F3D50063EAD6 /* Unauthenticated */ = {
+			isa = PBXGroup;
+			children = (
+				280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */,
+				280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */,
+			);
+			path = Unauthenticated;
+			sourceTree = "<group>";
+		};
+		280AFDFE2685FD5B0063EAD6 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				280AFDFF2685FD670063EAD6 /* ApplicationError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
 		28B6C4E02685CC3E00241CE3 = {
 			isa = PBXGroup;
 			children = (
+				280AFDF42685EE8D0063EAD6 /* TODO.txt */,
 				28B6C4EB2685CC3E00241CE3 /* Source */,
 				28B6C4F52685CC3F00241CE3 /* Info.plist */,
 				28B6C4F02685CC3F00241CE3 /* Assets.xcassets */,
@@ -67,10 +119,12 @@
 		28B6C4EB2685CC3E00241CE3 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				280AFDFE2685FD5B0063EAD6 /* Errors */,
+				280AFDF82685F2A40063EAD6 /* Configuration */,
+				280AFDF12685EDC80063EAD6 /* Views */,
 				280AFDE22685D4AF0063EAD6 /* Utilities */,
 				28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */,
-				28B6C4EE2685CC3E00241CE3 /* MainView.swift */,
-				280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */,
+				280AFDF22685EDE40063EAD6 /* AppAuthHandler.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -91,6 +145,10 @@
 			dependencies = (
 			);
 			name = AppAuthDemo;
+			packageProductDependencies = (
+				280AFDEC2685EB9C0063EAD6 /* AppAuth */,
+				280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */,
+			);
 			productName = client;
 			productReference = 28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */;
 			productType = "com.apple.product-type.application";
@@ -118,6 +176,10 @@
 				Base,
 			);
 			mainGroup = 28B6C4E02685CC3E00241CE3;
+			packageReferences = (
+				280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
+				280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */,
+			);
 			productRefGroup = 28B6C4EA2685CC3E00241CE3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -134,6 +196,7 @@
 			files = (
 				28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */,
 				280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */,
+				280AFDF52685EE8D0063EAD6 /* TODO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,9 +208,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */,
+				280AFE002685FD670063EAD6 /* ApplicationError.swift in Sources */,
+				280AFDF72685F09E0063EAD6 /* UnauthenticatedViewModel.swift in Sources */,
+				280AFDF32685EDE40063EAD6 /* AppAuthHandler.swift in Sources */,
 				280AFDE42685D4BD0063EAD6 /* CustomButtonStyle.swift in Sources */,
 				280AFDE12685D3150063EAD6 /* UnauthenticatedView.swift in Sources */,
 				28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */,
+				280AFDFA2685F2BC0063EAD6 /* ApplicationConfig.swift in Sources */,
+				280AFDFD2685F4060063EAD6 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +273,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -260,7 +328,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -278,7 +346,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -298,7 +366,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +400,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openid/AppAuth-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
+		280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/belozierov/SwiftCoroutine";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.11;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		280AFDEC2685EB9C0063EAD6 /* AppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuth;
+		};
+		280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */;
+			productName = SwiftCoroutine;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 28B6C4E12685CC3E00241CE3 /* Project object */;
 }

@@ -18,8 +18,15 @@ import SwiftUI
 
 struct UnauthenticatedView: View {
     
+    @ObservedObject private var model: UnauthenticatedViewModel
+    
+    init(model: UnauthenticatedViewModel) {
+        self.model = model
+    }
+    
     var body: some View {
     
+        let authenticationDisabled = !self.model.isRegistered
         return VStack {
             
             Text("main_title")
@@ -45,10 +52,16 @@ struct UnauthenticatedView: View {
             .padding(.top, 20)
             .padding(.leading, 20)
             .padding(.trailing, 20)
-            .buttonStyle(CustomButtonStyle(disabled: false))
+            .buttonStyle(CustomButtonStyle(disabled: authenticationDisabled))
+            .disabled(authenticationDisabled)
             
             Spacer()
         }
+        .onAppear(perform: self.onViewCreated)
+    }
+    
+    func onViewCreated() {
+        self.model.registerIfRequired()
     }
         
     func onStartAuthentication() {

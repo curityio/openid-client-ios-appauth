@@ -1,0 +1,18 @@
+1. Get metadata happy case working
+   Complete the ApplicationStateManager and authState setup
+
+2. Error view completed
+
+3. Get dynamic client registration working
+
+5. Get login start working and showing ASWebAuthenticationSession
+   Handle cancellation case
+
+6. Get login completion working and store tokens in auth state
+   Move to a new empty view
+
+7. Get the new view rendering
+
+8. Get token refresh working
+
+9. Get end session working

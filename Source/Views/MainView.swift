@@ -18,7 +18,13 @@ import SwiftUI
 
 struct MainView: View {
     
+    @ObservedObject private var _model: MainViewModel
+    
+    init(model: MainViewModel) {
+        self._model = model
+    }
+    
     var body: some View {
-        UnauthenticatedView()
+        UnauthenticatedView(model: UnauthenticatedViewModel(appauth: self._model.appauth))
     }
 }
