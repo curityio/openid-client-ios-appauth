@@ -22,14 +22,14 @@ struct UnauthenticatedView: View {
     
         return VStack {
             
-            Text("Curity AppAuth Demo App")
+            Text("main_title")
                 .fontWeight(.bold)
                 .padding(.top, 20)
                 .font(.system(size: 28))
                 .frame(alignment: .leading)
                 .padding(.leading, 20)
     
-            Text("Welcome to the SwiftUI AppAuth demo")
+            Text("welcome_message")
                 .padding(.top, 20)
                 .font(.system(size: 20))
                 .frame(alignment: .leading)
@@ -40,7 +40,7 @@ struct UnauthenticatedView: View {
                 .padding(.top, 20)
             
             Button(action: self.onStartAuthentication) {
-               Text("Start Authentication")
+               Text("start_authentication")
             }
             .padding(.top, 20)
             .padding(.leading, 20)

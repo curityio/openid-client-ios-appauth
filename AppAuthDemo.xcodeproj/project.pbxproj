@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		280AFDE12685D3150063EAD6 /* UnauthenticatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */; };
 		280AFDE42685D4BD0063EAD6 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */; };
+		280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 280AFDE92685EA180063EAD6 /* Localizable.strings */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
 		28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B6C4F02685CC3F00241CE3 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* Begin PBXFileReference section */
 		280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedView.swift; sourceTree = "<group>"; };
 		280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
+		280AFDE92685EA180063EAD6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -39,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */,
+				280AFDE92685EA180063EAD6 /* Localizable.strings */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -130,6 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */,
+				280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
