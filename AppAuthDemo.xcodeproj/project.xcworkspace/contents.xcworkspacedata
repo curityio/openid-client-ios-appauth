@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/gary.archer/dev/openid-client-ios-appauth/client/demoapp.xcodeproj">
+      location = "self:/Users/gary.archer/dev/openid-client-ios-appauth/AppAuthDemo.xcodeproj">
    </FileRef>
 </Workspace>
