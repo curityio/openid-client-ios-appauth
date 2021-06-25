@@ -36,6 +36,7 @@ struct ErrorView: View {
             Text(self.model.description)
                 .errorValueStyle()
                 .padding(.leading, 20)
+                .padding(.trailing, 20)
         }
     }
 }

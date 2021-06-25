@@ -32,8 +32,6 @@ class ErrorViewModel: ObservableObject {
     }
 
     func hasDetails() -> Bool {
-        let result = !self.title.isEmpty
-        print("*** Error Has Details: \(result)")
-        return result
+        return !self.title.isEmpty
     }
 }

@@ -50,7 +50,26 @@ class AppAuthHandler {
     
     private func createAuthorizationError(title: String, ex: Error?) -> ApplicationError {
         
-        let error = ApplicationError(title: title, description: "It all went horribly wrong")
+        var parts = [String]()
+        if (ex == nil) {
+
+            parts.append("Unknown Error")
+
+        } else {
+        
+            let nsError = ex! as NSError
+            
+            if nsError.domain.contains("org.openid.appauth") {
+                parts.append("(\(nsError.domain) / \(String(nsError.code)))")
+            }
+            
+            if !ex!.localizedDescription.isEmpty {
+                parts.append(ex!.localizedDescription)
+            }
+        }
+        
+        let fullDescription = parts.joined(separator: " : ")
+        let error = ApplicationError(title: title, description: fullDescription)
         Logger.error(data: "\(error.title) : \(error.description)")
         return error
     }

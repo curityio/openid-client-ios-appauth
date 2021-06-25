@@ -38,7 +38,7 @@ class UnauthenticatedViewModel: ObservableObject {
 
                 self.error = nil
                 try DispatchQueue.global().await {
-                    try self.appauth.fetchMetadata(issuer: ApplicationConfig.issuer).await()
+                    let _ = try self.appauth.fetchMetadata(issuer: ApplicationConfig.issuer).await()
                 }
                 
                 self.isRegistered = true
