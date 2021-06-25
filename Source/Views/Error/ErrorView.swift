@@ -14,9 +14,28 @@
 // limitations under the License.
 //
 
-import Foundation
-import SwiftCoroutine
+import SwiftUI
 
-class MainViewModel: ObservableObject {
-    var appauth = AppAuthHandler()
+struct ErrorView: View {
+
+    @ObservedObject private var model: ErrorViewModel
+    
+    init(model: ErrorViewModel) {
+        self.model = model
+    }
+    
+    var body: some View {
+    
+        return VStack {
+            
+            Text(self.model.title)
+                .labelStyle()
+                .padding(.top, 20)
+                .padding(.leading, 20)
+
+            Text(self.model.description)
+                .errorValueStyle()
+                .padding(.leading, 20)
+        }
+    }
 }

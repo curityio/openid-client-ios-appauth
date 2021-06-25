@@ -29,18 +29,13 @@ struct UnauthenticatedView: View {
         let authenticationDisabled = !self.model.isRegistered
         return VStack {
             
-            Text("main_title")
-                .fontWeight(.bold)
-                .padding(.top, 20)
-                .font(.system(size: 28))
-                .frame(alignment: .leading)
-                .padding(.leading, 20)
-    
+            if self.model.error != nil {
+                ErrorView(model: ErrorViewModel(error: self.model.error!))
+            }
+            
             Text("welcome_message")
+                .labelStyle()
                 .padding(.top, 20)
-                .font(.system(size: 20))
-                .frame(alignment: .leading)
-                .padding(.leading, 20)
             
             Image("StartIllustration")
                 .aspectRatio(contentMode: .fit)
@@ -65,6 +60,5 @@ struct UnauthenticatedView: View {
     }
         
     func onStartAuthentication() {
-        print("*** YAY START AUTH")
     }
 }

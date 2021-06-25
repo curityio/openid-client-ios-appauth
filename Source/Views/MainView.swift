@@ -17,14 +17,23 @@
 import SwiftUI
 
 struct MainView: View {
-    
-    @ObservedObject private var _model: MainViewModel
+
+    @ObservedObject private var model: MainViewModel
     
     init(model: MainViewModel) {
-        self._model = model
+        self.model = model
     }
     
     var body: some View {
-        UnauthenticatedView(model: UnauthenticatedViewModel(appauth: self._model.appauth))
+        
+        return VStack {
+        
+            Text("main_title")
+                .headingStyle()
+                .padding(.top, 20)
+                .padding(.leading, 20)
+
+            UnauthenticatedView(model: UnauthenticatedViewModel(appauth: self.model.appauth))
+        }
     }
 }

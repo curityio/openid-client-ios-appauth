@@ -14,9 +14,26 @@
 // limitations under the License.
 //
 
-import Foundation
-import SwiftCoroutine
+import SwiftUI
 
-class MainViewModel: ObservableObject {
-    var appauth = AppAuthHandler()
+class ErrorViewModel: ObservableObject {
+
+    @Published var title = ""
+    @Published var description = ""
+    
+    init(error: ApplicationError) {
+        self.title = error.title
+        self.description = error.description.isEmpty ? "Unknown Error" : error.description
+    }
+
+    func clearDetails() {
+        self.title = ""
+        self.description = ""
+    }
+
+    func hasDetails() -> Bool {
+        let result = !self.title.isEmpty
+        print("*** Error Has Details: \(result)")
+        return result
+    }
 }

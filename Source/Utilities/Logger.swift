@@ -14,9 +14,19 @@
 // limitations under the License.
 //
 
-import Foundation
-import SwiftCoroutine
+import os.log
 
-class MainViewModel: ObservableObject {
-    var appauth = AppAuthHandler()
+struct Logger {
+    
+    static func error(data: String) {
+        os_log("%s", type: .error, data)
+    }
+
+    static func info(data: String) {
+        os_log("%s", type: .info, data)
+    }
+
+    static func debug(data: String) {
+        os_log("%s", type: .debug, data)
+    }
 }

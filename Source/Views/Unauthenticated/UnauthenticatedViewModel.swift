@@ -20,10 +20,13 @@ import SwiftCoroutine
 class UnauthenticatedViewModel: ObservableObject {
     
     private let appauth: AppAuthHandler
+    @Published var error: ApplicationError?
     @Published var isRegistered: Bool
-    
+
     init(appauth: AppAuthHandler) {
+        
         self.appauth = appauth
+        self.error = nil
         self.isRegistered = false
     }
     
@@ -32,19 +35,19 @@ class UnauthenticatedViewModel: ObservableObject {
         DispatchQueue.main.startCoroutine {
             
             do {
-                
+
+                self.error = nil
                 try DispatchQueue.global().await {
-                    try self.appauth.fetchMetadata().await()
+                    try self.appauth.fetchMetadata(issuer: ApplicationConfig.issuer).await()
                 }
                 
-                print("Fetched metadata OK")
                 self.isRegistered = true
                 
             } catch {
                 
                 let appError = error as? ApplicationError
                 if appError != nil {
-                    print("Metadata Error: \(appError!.area)")
+                    self.error = appError!
                 }
             }
         }

@@ -14,34 +14,44 @@
 // limitations under the License.
 //
 
-
 import AppAuth
 import SwiftCoroutine
 
 class AppAuthHandler {
     
-    var counter = 1;
-    
-    func fetchMetadata() throws -> CoFuture<Void> {
+    func fetchMetadata(issuer: String) throws -> CoFuture<OIDServiceConfiguration> {
         
-        let promise = CoPromise<Void>()
+        let promise = CoPromise<OIDServiceConfiguration>()
+        
+        guard let issuerUrl = URL(string: issuer) else {
 
-        /*OIDAuthorizationService.discoverConfiguration(
-            forIssuer: issuerUrl) { metadata, error in
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The issuer URL could not be parsed")
+            promise.fail(error)
+            return promise
+        }
 
-                self.metadata = metadata
-                if error != nil {
-                    promise.fail(ErrorHandler.fromException(error: error!))
+        OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUrl) { metadata, ex in
+
+                if metadata != nil {
+
+                    Logger.info(data: "Discovery document retrieved successfully")
+                    Logger.debug(data: metadata.debugDescription)
+                    promise.success(metadata!)
+
                 } else {
-                    promise.success(Void())
+
+                    let error = self.createAuthorizationError(title: "Metadata Download Error", ex: ex)
+                    promise.fail(error)
                 }
-        }*/
-        
-        if (counter == 0) {
-            throw ApplicationError(area: "whatevar")
         }
         
-        promise.success(Void())
         return promise
+    }
+    
+    private func createAuthorizationError(title: String, ex: Error?) -> ApplicationError {
+        
+        let error = ApplicationError(title: title, description: "It all went horribly wrong")
+        Logger.error(data: "\(error.title) : \(error.description)")
+        return error
     }
 }

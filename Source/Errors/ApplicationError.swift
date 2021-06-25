@@ -16,9 +16,11 @@
 
 class ApplicationError: Error {
     
-    var area: String
+    var title: String
+    var description: String
     
-    init(area: String) {
-        self.area = area
+    init(title: String, description: String) {
+        self.title = title
+        self.description = description
     }
 }
