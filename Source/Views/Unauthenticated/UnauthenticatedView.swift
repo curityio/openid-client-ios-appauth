@@ -16,12 +16,13 @@
 
 import SwiftUI
 
-struct UnauthenticatedView: View {
+struct UnauthenticatedView: View, UnauthenticatedViewEvents {
     
     @ObservedObject private var model: UnauthenticatedViewModel
     
-    init(model: UnauthenticatedViewModel) {
-        self.model = model
+    init(appauth: AppAuthHandler) {
+        self.model = UnauthenticatedViewModel(appauth: appauth)
+        self.model.events = self
     }
     
     var body: some View {
@@ -30,7 +31,7 @@ struct UnauthenticatedView: View {
         return VStack {
             
             if self.model.error != nil {
-                ErrorView(model: ErrorViewModel(error: self.model.error!))
+                ErrorView(error: self.model.error!)
             }
             
             Text("welcome_message")
@@ -41,7 +42,7 @@ struct UnauthenticatedView: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(.top, 20)
             
-            Button(action: self.onStartAuthentication) {
+            Button(action: self.model.startLogin) {
                Text("start_authentication")
             }
             .padding(.top, 20)
@@ -59,6 +60,7 @@ struct UnauthenticatedView: View {
         self.model.registerIfRequired()
     }
         
-    func onStartAuthentication() {
+    func getViewController() -> UIViewController {
+        return UIApplication.shared.windows.first!.rootViewController!
     }
 }

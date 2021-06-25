@@ -23,6 +23,7 @@
 		280AFE08268620240063EAD6 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE07268620240063EAD6 /* ErrorView.swift */; };
 		280AFE0A268624E70063EAD6 /* TextStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE09268624E70063EAD6 /* TextStyles.swift */; };
 		280AFE0C26863F010063EAD6 /* ApplicationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */; };
+		280AFE0E26864B390063EAD6 /* UnauthenticatedViewEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
 		28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B6C4F02685CC3F00241CE3 /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 		280AFE07268620240063EAD6 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		280AFE09268624E70063EAD6 /* TextStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyles.swift; sourceTree = "<group>"; };
 		280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStateManager.swift; sourceTree = "<group>"; };
+		280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedViewEvents.swift; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 			children = (
 				280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */,
 				280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */,
+				280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */,
 			);
 			path = Unauthenticated;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */,
+				280AFE0E26864B390063EAD6 /* UnauthenticatedViewEvents.swift in Sources */,
 				280AFE002685FD670063EAD6 /* ApplicationError.swift in Sources */,
 				280AFDF72685F09E0063EAD6 /* UnauthenticatedViewModel.swift in Sources */,
 				280AFDF32685EDE40063EAD6 /* AppAuthHandler.swift in Sources */,

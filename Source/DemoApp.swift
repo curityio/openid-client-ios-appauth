@@ -21,7 +21,7 @@ struct DemoApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainView(model: MainViewModel())
+            MainView()
         }
     }
 }

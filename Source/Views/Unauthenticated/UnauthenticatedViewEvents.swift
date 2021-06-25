@@ -14,28 +14,8 @@
 // limitations under the License.
 //
 
-import SwiftUI
+import UIKit
 
-struct MainView: View {
-
-    @ObservedObject private var model: MainViewModel
-    
-    init() {
-        self.model = MainViewModel()
-    }
-    
-    var body: some View {
-        
-        return VStack {
-        
-            Text("main_title")
-                .headingStyle()
-                .padding(.top, 20)
-                .padding(.leading, 20)
-
-            UnauthenticatedView(appauth: self.model.appauth)
-                
-                
-        }
-    }
+protocol UnauthenticatedViewEvents {
+    func getViewController() -> UIViewController
 }

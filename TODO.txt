@@ -1,15 +1,18 @@
-1. Get login start working and showing ASWebAuthenticationSession
-   Handle cancellation case
-
-2. Get login completion working and store tokens in auth state
-   Move to a new empty view
+1. Get login completion working
+   DCR to test if registered already
+   Only update ApplicationStateManager on a single thread
+      
+2. Navigate to a new view
+   Implement controls
 
 3. Implement the new view operations
    Get token refresh working
    Get end session working
+   
+4. Thread safety and leaked resources to check for
 
-ANDROID / BOTH
---------------
+ANDROID
+------
 Pass ApplicationConfig into constructor of AppAuthHandler
-Only update ApplicationStateManager on a single thread and ensure safe
+Only update ApplicationStateManager on a single thread
 Test on supported versions and real devices, including changing orientation

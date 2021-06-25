@@ -16,9 +16,23 @@
 // limitations under the License.
 //
 
+import Foundation
+
 struct ApplicationConfig {
+
     let issuer = "https://7c4999265235.eu.ngrok.io/oauth/v2/oauth-anonymous"
     let redirectUri = "io.curity.client:/callback"
     let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
     let scope = "openid profile"
+    
+    func getUrl(value: String) -> (URL?, Error?) {
+        
+        guard let url = URL(string: value) else {
+
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The URL \(value) could not be parsed")
+            return (nil, error)
+        }
+        
+        return (url, nil)
+    }
 }

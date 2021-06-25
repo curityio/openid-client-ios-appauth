@@ -20,16 +20,21 @@ import SwiftCoroutine
 class AppAuthHandler {
     
     private let config: ApplicationConfig
+    private var userAgentSession: OIDExternalUserAgentSession?
     
     init(config: ApplicationConfig) {
         self.config = config
+        self.userAgentSession = nil
     }
     
+    /*
+     * Get OpenID Connect endpoints and ensure that dynamic client registration is configured
+     */
     func fetchMetadata() throws -> CoFuture<OIDServiceConfiguration> {
         
         let promise = CoPromise<OIDServiceConfiguration>()
         
-        let (issuerUrl, parseError) = getUrl(value: config.issuer)
+        let (issuerUrl, parseError) = self.config.getUrl(value: config.issuer)
         if issuerUrl == nil {
             promise.fail(parseError!)
             return promise
@@ -38,6 +43,15 @@ class AppAuthHandler {
         OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUrl!) { metadata, ex in
 
             if metadata != nil {
+                
+                if (metadata!.registrationEndpoint == nil) {
+
+                    let configurationError = ApplicationError(
+                        title: "Invalid Configuration Error",
+                        description: "No registration endpoint is configured in the Identity Server"
+                    )
+                    promise.fail(configurationError)
+                }
 
                 Logger.info(data: "Discovery document retrieved successfully")
                 Logger.debug(data: metadata.debugDescription)
@@ -52,12 +66,15 @@ class AppAuthHandler {
         
         return promise
     }
-    
+
+    /*
+     * Perform dynamic client registration and then store the response
+     */
     func registerClient(metadata: OIDServiceConfiguration) -> CoFuture<OIDRegistrationResponse> {
         
         let promise = CoPromise<OIDRegistrationResponse>()
         
-        let (redirectUri, parseError) = getUrl(value: self.config.redirectUri)
+        let (redirectUri, parseError) = self.config.getUrl(value: self.config.redirectUri)
         if redirectUri == nil {
             promise.fail(parseError!)
             return promise
@@ -95,18 +112,114 @@ class AppAuthHandler {
         
         return promise
     }
-    
-    private func getUrl(value: String) -> (URL?, Error?) {
-        
-        guard let url = URL(string: value) else {
 
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The URL \(value) could not be parsed")
-            return (nil, error)
+    /*
+     * Trigger a redirect with standard parameters
+     * acr_values can be sent as an extra parameter, to control authentication methods
+     */
+    func performAuthorizationRedirect(
+        metadata: OIDServiceConfiguration,
+        registrationResponse: OIDRegistrationResponse,
+        viewController: UIViewController) -> CoFuture<OIDAuthorizationResponse?> {
+        
+        let promise = CoPromise<OIDAuthorizationResponse?>()
+        
+        let (redirectUri, parseError) = self.config.getUrl(value: self.config.redirectUri)
+        if redirectUri == nil {
+            promise.fail(parseError!)
+            return promise
+        }
+
+        // Use acr_values to select a particular authentication method at runtime
+        let extraParams = [String: String]()
+        // extraParams["acr_values"] = "urn:se:curity:authentication:html-form:Username-Password"
+        
+        let scopesArray = self.config.scope.components(separatedBy: " ")
+        let request = OIDAuthorizationRequest(
+            configuration: metadata,
+            clientId: registrationResponse.clientID,
+            clientSecret: nil,
+            scopes: scopesArray,
+            redirectURL: redirectUri!,
+            responseType: OIDResponseTypeCode,
+            additionalParameters: extraParams)
+        
+        self.userAgentSession = OIDAuthorizationService.present(request, presenting: viewController) { response, ex in
+            
+            if response != nil {
+                
+                Logger.info(data: "Authorization response received successfully")
+                let code = response!.authorizationCode
+                let state = response!.state
+                if (code != nil && state != nil) {
+                    Logger.debug(data: "CODE: \(code!), STATE: \(state!)")
+                }
+
+                promise.success(response!)
+
+            } else {
+                
+                if ex != nil && self.isUserCancellationErrorCode(ex: ex!) {
+                    
+                    Logger.info(data: "User cancelled the ASWebAuthenticationSession window")
+                    promise.success(nil)
+
+                } else {
+
+                    let error = self.createAuthorizationError(title: "Authorization Request Error", ex: ex)
+                    promise.fail(error)
+                }
+            }
         }
         
-        return (url, nil)
+        return promise
     }
     
+    /*
+     * Handle the authorization response, including the user closing the Chrome Custom Tab
+     */
+    func handleAuthorizationResponse() {
+    }
+
+    /*
+     * Handle the authorization code grant request to get tokens
+     */
+    func redeemCodeForTokens() {
+    }
+
+    /*
+     * Try to refresh an access token and return null when the refresh token expires
+     */
+    func refreshAccessToken(
+            refreshToken: String,
+            serverConfiguration: OIDServiceConfiguration,
+            registrationResponse: OIDRegistrationResponse) {
+    }
+
+    /*
+     * Do an OpenID Connect end session redirect and remove the SSO cookie
+     */
+    func getEndSessionRedirectIntent() {
+    }
+
+    /*
+     * Finalize after receiving an end session response
+     */
+    func handleEndSessionResponse() {
+    }
+
+    /*
+     * We can check for specific error codes to handle the user cancelling the ASWebAuthenticationSession window
+     */
+    private func isUserCancellationErrorCode(ex: Error) -> Bool {
+
+        let error = ex as NSError
+        return error.domain == OIDGeneralErrorDomain && error.code == OIDErrorCode.userCanceledAuthorizationFlow.rawValue
+    }
+
+    /*
+     * Process standard OAuth error / error_description fields and also AppAuth error identifiers
+     */
     private func createAuthorizationError(title: String, ex: Error?) -> ApplicationError {
         
         var parts = [String]()
@@ -115,18 +228,18 @@ class AppAuthHandler {
             parts.append("Unknown Error")
 
         } else {
-        
+
             let nsError = ex! as NSError
             
             if nsError.domain.contains("org.openid.appauth") {
                 parts.append("(\(nsError.domain) / \(String(nsError.code)))")
             }
-            
+
             if !ex!.localizedDescription.isEmpty {
                 parts.append(ex!.localizedDescription)
             }
         }
-        
+
         let fullDescription = parts.joined(separator: " : ")
         let error = ApplicationError(title: title, description: fullDescription)
         Logger.error(data: "\(error.title) : \(error.description)")

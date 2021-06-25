@@ -20,16 +20,22 @@ import SwiftCoroutine
 class UnauthenticatedViewModel: ObservableObject {
     
     private let appauth: AppAuthHandler
+    var events: UnauthenticatedViewEvents?
     @Published var error: ApplicationError?
     @Published var isRegistered: Bool
 
     init(appauth: AppAuthHandler) {
-        
+
         self.appauth = appauth
+        self.events = nil
         self.error = nil
         self.isRegistered = false
     }
     
+    /*
+     * Startup handling to lookup metadata and do the dynamic client registration if required
+     * Make HTTP requests on a worker thread and then perform updates on the UI thread
+     */
     func registerIfRequired() {
         
         DispatchQueue.main.startCoroutine {
@@ -45,6 +51,35 @@ class UnauthenticatedViewModel: ObservableObject {
                 
                 self.isRegistered = true
                 
+            } catch {
+                
+                let appError = error as? ApplicationError
+                if appError != nil {
+                    self.error = appError!
+                }
+            }
+        }
+    }
+    
+    /*
+     * Run the authorization redirect on the UI thread, then redeem the code for tokens on a background thread
+     */
+    func startLogin() {
+
+        DispatchQueue.main.startCoroutine {
+
+            do {
+
+                self.error = nil
+                let response = try self.appauth.performAuthorizationRedirect(
+                    metadata: ApplicationStateManager.metadata!,
+                    registrationResponse: ApplicationStateManager.registrationResponse!,
+                    viewController: self.events!.getViewController()
+                ).await()
+
+                if response == nil {
+                }
+
             } catch {
                 
                 let appError = error as? ApplicationError
