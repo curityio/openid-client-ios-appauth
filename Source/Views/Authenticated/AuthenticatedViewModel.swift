@@ -17,43 +17,67 @@
 import Foundation
 import SwiftCoroutine
 
-class UnauthenticatedViewModel: ObservableObject {
-
-    var events: UnauthenticatedViewEvents?
-    private var appauth: AppAuthHandler?
-    private var onLoggedIn: (() -> Void)?
-
-    @Published var error: ApplicationError?
-    @Published var isRegistered: Bool
+class AuthenticatedViewModel: ObservableObject {
     
-    init(appauth: AppAuthHandler, onLoggedIn: @escaping () -> Void) {
+    var events: AuthenticatedViewEvents?
+    private var appauth: AppAuthHandler?
+    private var onLoggedOut: (() -> Void)?
+
+    @Published var hasRefreshToken: Bool
+    @Published var subject: String
+    @Published var accessToken: String
+    @Published var refreshToken: String
+    @Published var error: ApplicationError?
+    
+    init(appauth: AppAuthHandler, onLoggedOut: @escaping () -> Void) {
 
         self.appauth = appauth
-        self.onLoggedIn = onLoggedIn
+        self.onLoggedOut = onLoggedOut
         self.events = nil
+        
+        self.hasRefreshToken = false
+        self.subject = ""
+        self.accessToken = ""
+        self.refreshToken = ""
         self.error = nil
-        self.isRegistered = false
     }
     
     /*
-     * Startup handling to lookup metadata and do the dynamic client registration if required
-     * Make HTTP requests on a worker thread and then perform updates on the UI thread
+     * Show token information after login
      */
-    func registerIfRequired() {
+    func processTokens() {
+
+        self.subject = "demouser"
+        
+        if ApplicationStateManager.tokenResponse?.accessToken != nil {
+            self.accessToken = ApplicationStateManager.tokenResponse!.accessToken!
+        }
+
+        if ApplicationStateManager.tokenResponse?.refreshToken != nil {
+            self.hasRefreshToken = true
+            self.refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
+        }
+    }
+
+    /*
+     * Perform a refresh token grant message
+     */
+    func refreshAccessToken() {
         
         DispatchQueue.main.startCoroutine {
-            
+
             do {
 
-                self.error = nil
                 try DispatchQueue.global().await {
+
+                    ApplicationStateManager.tokenResponse = try self.appauth!.refreshAccessToken(
+                        refreshToken: ApplicationStateManager.tokenResponse!.refreshToken!,
+                        metadata: ApplicationStateManager.metadata!,
+                        registrationResponse: ApplicationStateManager.registrationResponse!).await()
                     
-                    ApplicationStateManager.metadata = try self.appauth!.fetchMetadata().await()
-                    ApplicationStateManager.registrationResponse = try self.appauth!.registerClient(metadata: ApplicationStateManager.metadata!).await()
+                    self.processTokens()
                 }
-                
-                self.isRegistered = true
-                
+
             } catch {
                 
                 let appError = error as? ApplicationError
@@ -65,11 +89,11 @@ class UnauthenticatedViewModel: ObservableObject {
     }
     
     /*
-     * Run the authorization redirect on the UI thread, then redeem the code for tokens on a background thread
+     * Run the end session redirect and handle the response
      */
-    func startLogin() {
+    func startLogout() {
 
-        DispatchQueue.main.startCoroutine {
+        /*DispatchQueue.main.startCoroutine {
 
             do {
 
@@ -80,22 +104,6 @@ class UnauthenticatedViewModel: ObservableObject {
                     viewController: self.events!.getViewController()
                 ).await()
 
-                if authResponse != nil {
-                    
-                    try DispatchQueue.global().await {
-                        
-                        ApplicationStateManager.tokenResponse = try self.appauth!.redeemCodeForTokens(
-                            registrationResponse: ApplicationStateManager.registrationResponse!,
-                            authResponse: authResponse!
-                            
-                        ).await()
-                        
-                        ApplicationStateManager.idToken = ApplicationStateManager.tokenResponse?.idToken
-                    }
-                    
-                    self.onLoggedIn!()
-                }
-
             } catch {
                 
                 let appError = error as? ApplicationError
@@ -103,6 +111,7 @@ class UnauthenticatedViewModel: ObservableObject {
                     self.error = appError!
                 }
             }
-        }
+        }*/
     }
 }
+

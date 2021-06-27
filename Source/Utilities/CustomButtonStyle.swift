@@ -20,7 +20,7 @@ struct CustomButtonStyle: ButtonStyle {
     
     private let disabled: Bool
 
-    init (disabled: Bool) {
+    init (disabled: Bool = false) {
         self.disabled = disabled
     }
     

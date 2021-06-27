@@ -16,15 +16,75 @@
 
 import SwiftUI
 
-struct AuthenticatedView: View {
+struct AuthenticatedView: View, AuthenticatedViewEvents {
+    
+    @ObservedObject private var model: AuthenticatedViewModel
+    
+    init(model: AuthenticatedViewModel) {
+        self.model = model
+        self.model.events = self
+    }
     
     var body: some View {
     
+        let deviceWidth = UIScreen.main.bounds.size.width
+        let refreshDisabled = !self.model.hasRefreshToken
+
         return VStack {
             
-            Text("authenticated")
+            if self.model.error != nil {
+                ErrorView(model: ErrorViewModel(error: self.model.error!))
+            }
+           
+            Text("subject")
                 .labelStyle()
                 .padding(.top, 20)
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+                
+            Text(self.model.subject)
+                .valueStyle()
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+            
+            Text("access_token")
+                .labelStyle()
+                .padding(.top, 20)
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+            
+            Text(self.model.accessToken)
+                .valueStyle()
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+
+            Text("refresh_token")
+                .labelStyle()
+                .padding(.top, 20)
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+
+            Text(self.model.refreshToken)
+                .valueStyle()
+                .padding(.leading, 20)
+                .frame(width: deviceWidth, alignment: .leading)
+            
+            Button(action: self.model.refreshAccessToken) {
+               Text("refresh_access_token")
+            }
+            .padding(.top, 20)
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
+            .buttonStyle(CustomButtonStyle(disabled: refreshDisabled))
+            .disabled(refreshDisabled)
+            
+            Button(action: self.model.startLogout) {
+               Text("sign_out")
+            }
+            .padding(.top, 20)
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
+            .buttonStyle(CustomButtonStyle())
             
             Spacer()
         }
@@ -32,7 +92,7 @@ struct AuthenticatedView: View {
     }
     
     func onViewCreated() {
-        // process tokens here
+        self.model.processTokens()
     }
         
     func getViewController() -> UIViewController {

@@ -20,12 +20,13 @@ struct MainView: View {
 
     @ObservedObject private var model: MainViewModel
     private let unauthenticatedModel: UnauthenticatedViewModel
+    private let authenticatedModel: AuthenticatedViewModel
 
     init(model: MainViewModel) {
 
         self.model = model
-        self.unauthenticatedModel = UnauthenticatedViewModel()
-        self.unauthenticatedModel.initialize(appauth: self.model.appauth, onLoggedIn: self.model.onLoggedIn)
+        self.unauthenticatedModel = UnauthenticatedViewModel(appauth: model.appauth, onLoggedIn: model.onLoggedIn)
+        self.authenticatedModel = AuthenticatedViewModel(appauth: model.appauth, onLoggedOut: model.onLoggedOut)
     }
     
     var body: some View {
@@ -40,7 +41,7 @@ struct MainView: View {
             if (!self.model.isAuthenticated) {
                 UnauthenticatedView(model: self.unauthenticatedModel)
             } else {
-                AuthenticatedView()
+                AuthenticatedView(model: self.authenticatedModel)
             }
         }
     }

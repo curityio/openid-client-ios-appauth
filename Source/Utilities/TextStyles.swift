@@ -27,7 +27,7 @@ extension Text {
     
     func labelStyle() -> Text {
 
-        return foregroundColor(Color.gray)
+       return foregroundColor(Color.gray)
                  .font(.system(size: 20))
                  .fontWeight(.semibold)
     }
@@ -35,7 +35,7 @@ extension Text {
     func valueStyle(textColor: Color = Color.black) -> Text {
 
         return foregroundColor(textColor)
-                 .font(.system(size: 20))
+                 .font(.system(size: 16))
                  .fontWeight(.semibold)
     }
 

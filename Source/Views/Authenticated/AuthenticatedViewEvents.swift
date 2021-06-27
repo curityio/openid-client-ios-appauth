@@ -14,12 +14,8 @@
 // limitations under the License.
 //
 
-import AppAuth
+import UIKit
 
-struct ApplicationStateManager {
-    
-    static var metadata: OIDServiceConfiguration? = nil
-    static var registrationResponse: OIDRegistrationResponse? = nil
-    static var tokenResponse: OIDTokenResponse? = nil
-    static var idToken: String? = nil
+protocol AuthenticatedViewEvents {
+    func getViewController() -> UIViewController
 }

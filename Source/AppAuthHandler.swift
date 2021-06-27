@@ -215,8 +215,46 @@ class AppAuthHandler {
      */
     func refreshAccessToken(
             refreshToken: String,
-            serverConfiguration: OIDServiceConfiguration,
-            registrationResponse: OIDRegistrationResponse) {
+            metadata: OIDServiceConfiguration,
+            registrationResponse: OIDRegistrationResponse) -> CoFuture<OIDTokenResponse> {
+        
+        let promise = CoPromise<OIDTokenResponse>()
+        
+        //var extraParams = [String: String]()
+        //extraParams["client_secret"] = registrationResponse.clientSecret
+        
+        let request = OIDTokenRequest(
+            configuration: metadata,
+            grantType: OIDGrantTypeRefreshToken,
+            authorizationCode: nil,
+            redirectURL: nil,
+            clientID: registrationResponse.clientID,
+            clientSecret: registrationResponse.clientSecret,
+            scope: nil,
+            refreshToken: refreshToken,
+            codeVerifier: nil,
+            additionalParameters: nil)
+        
+        OIDAuthorizationService.perform(request) { tokenResponse, ex in
+
+            if tokenResponse != nil {
+
+                Logger.info(data: "Refresh token code grant response received successfully")
+                let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
+                let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
+                let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
+                Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
+
+                promise.success(tokenResponse!)
+
+            } else {
+
+                let error = self.createAuthorizationError(title: "Refresh Token Error", ex: ex)
+                promise.fail(error)
+            }
+        }
+        
+        return promise
     }
 
     /*
