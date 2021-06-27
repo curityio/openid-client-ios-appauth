@@ -29,6 +29,7 @@ struct AuthenticatedView: View, AuthenticatedViewEvents {
     
         let deviceWidth = UIScreen.main.bounds.size.width
         let refreshDisabled = !self.model.hasRefreshToken
+        let signOutDisabled = !self.model.hasIdToken
 
         return VStack {
             
@@ -84,7 +85,8 @@ struct AuthenticatedView: View, AuthenticatedViewEvents {
             .padding(.top, 20)
             .padding(.leading, 20)
             .padding(.trailing, 20)
-            .buttonStyle(CustomButtonStyle())
+            .buttonStyle(CustomButtonStyle(disabled: signOutDisabled))
+            .disabled(signOutDisabled)
             
             Spacer()
         }

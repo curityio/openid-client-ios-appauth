@@ -99,8 +99,10 @@ class AppAuthHandler {
             if response != nil {
                 
                 let registrationResponse = response!
+                let clientSecret = registrationResponse.clientSecret == nil ? "" : registrationResponse.clientSecret!
                 Logger.info(data: "Registration data retrieved successfully")
-                Logger.debug(data: "ID: \(registrationResponse.clientID), Secret: \(String(describing: registrationResponse.clientSecret))")
+                
+                Logger.debug(data: "ID: \(registrationResponse.clientID), Secret: \(clientSecret)")
                 promise.success(registrationResponse)
 
             } else {
@@ -168,6 +170,8 @@ class AppAuthHandler {
                     promise.fail(error)
                 }
             }
+            
+            self.userAgentSession = nil
         }
         
         return promise
@@ -206,7 +210,7 @@ class AppAuthHandler {
                 promise.fail(error)
             }
         }
-
+        
         return promise
     }
 
@@ -219,9 +223,6 @@ class AppAuthHandler {
             registrationResponse: OIDRegistrationResponse) -> CoFuture<OIDTokenResponse> {
         
         let promise = CoPromise<OIDTokenResponse>()
-        
-        //var extraParams = [String: String]()
-        //extraParams["client_secret"] = registrationResponse.clientSecret
         
         let request = OIDTokenRequest(
             configuration: metadata,
@@ -260,13 +261,41 @@ class AppAuthHandler {
     /*
      * Do an OpenID Connect end session redirect and remove the SSO cookie
      */
-    func getEndSessionRedirectIntent() {
-    }
+    func performEndSessionRedirect(metadata: OIDServiceConfiguration,
+                                   idToken: String,
+                                   viewController: UIViewController) -> CoFuture<Void> {
+        
+        let promise = CoPromise<Void>()
 
-    /*
-     * Finalize after receiving an end session response
-     */
-    func handleEndSessionResponse() {
+        let (postLogoutRedirectUri, parseError) = self.config.getPostLogoutRedirectUri()
+        if postLogoutRedirectUri == nil {
+            promise.fail(parseError!)
+            return promise
+        }
+        
+        let request = OIDEndSessionRequest(
+            configuration: metadata,
+            idTokenHint: idToken,
+            postLogoutRedirectURL: postLogoutRedirectUri!,
+            additionalParameters: nil)
+
+        let agent = OIDExternalUserAgentIOS(presenting: viewController)
+        self.userAgentSession = OIDAuthorizationService.present(request, externalUserAgent: agent!) { response, ex in
+            
+            if ex != nil {
+
+                let error = self.createAuthorizationError(title: "End Session Error", ex: ex)
+                promise.fail(error)
+
+            } else {
+                
+                promise.success(Void())
+            }
+            
+            self.userAgentSession = nil
+        }
+        
+        return promise
     }
 
     /*

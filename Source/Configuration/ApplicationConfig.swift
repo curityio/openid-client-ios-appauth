@@ -46,4 +46,15 @@ struct ApplicationConfig {
         
         return (url, nil)
     }
+    
+    func getPostLogoutRedirectUri() -> (URL?, Error?) {
+        
+        guard let url = URL(string: self.postLogoutRedirectUri) else {
+
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The post logout redirect URI could not be parsed")
+            return (nil, error)
+        }
+        
+        return (url, nil)
+    }
 }

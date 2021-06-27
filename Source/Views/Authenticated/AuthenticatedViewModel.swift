@@ -24,6 +24,7 @@ class AuthenticatedViewModel: ObservableObject {
     private var onLoggedOut: (() -> Void)?
 
     @Published var hasRefreshToken: Bool
+    @Published var hasIdToken: Bool
     @Published var subject: String
     @Published var accessToken: String
     @Published var refreshToken: String
@@ -36,6 +37,7 @@ class AuthenticatedViewModel: ObservableObject {
         self.events = nil
         
         self.hasRefreshToken = false
+        self.hasIdToken = false
         self.subject = ""
         self.accessToken = ""
         self.refreshToken = ""
@@ -56,6 +58,10 @@ class AuthenticatedViewModel: ObservableObject {
         if ApplicationStateManager.tokenResponse?.refreshToken != nil {
             self.hasRefreshToken = true
             self.refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
+        }
+        
+        if ApplicationStateManager.tokenResponse?.idToken != nil {
+            self.hasIdToken = true
         }
     }
 
@@ -93,16 +99,18 @@ class AuthenticatedViewModel: ObservableObject {
      */
     func startLogout() {
 
-        /*DispatchQueue.main.startCoroutine {
+        DispatchQueue.main.startCoroutine {
 
             do {
 
                 self.error = nil
-                let authResponse = try self.appauth!.performAuthorizationRedirect(
+                try self.appauth!.performEndSessionRedirect(
                     metadata: ApplicationStateManager.metadata!,
-                    registrationResponse: ApplicationStateManager.registrationResponse!,
+                    idToken: ApplicationStateManager.idToken!,
                     viewController: self.events!.getViewController()
                 ).await()
+                
+                self.onLoggedOut!()
 
             } catch {
                 
@@ -111,7 +119,6 @@ class AuthenticatedViewModel: ObservableObject {
                     self.error = appError!
                 }
             }
-        }*/
+        }
     }
 }
-
