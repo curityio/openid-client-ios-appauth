@@ -20,16 +20,27 @@ import Foundation
 
 struct ApplicationConfig {
 
-    let issuer = "https://7c4999265235.eu.ngrok.io/oauth/v2/oauth-anonymous"
-    let redirectUri = "io.curity.client:/callback"
+    private let issuer = "https://5c300a76b17a.eu.ngrok.io/oauth/v2/oauth-anonymous"
+    private let redirectUri = "io.curity.client:/callback"
     let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
     let scope = "openid profile"
     
-    func getUrl(value: String) -> (URL?, Error?) {
+    func getIssuerUri() -> (URL?, Error?) {
         
-        guard let url = URL(string: value) else {
+        guard let url = URL(string: self.issuer) else {
 
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The URL \(value) could not be parsed")
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The issuer URI could not be parsed")
+            return (nil, error)
+        }
+        
+        return (url, nil)
+    }
+
+    func getRedirectUri() -> (URL?, Error?) {
+        
+        guard let url = URL(string: self.redirectUri) else {
+
+            let error = ApplicationError(title: "Invalid Configuration Error", description: "The redirect URI could not be parsed")
             return (nil, error)
         }
         

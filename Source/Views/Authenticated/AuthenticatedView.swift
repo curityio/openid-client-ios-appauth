@@ -16,22 +16,26 @@
 
 import SwiftUI
 
-@main
-struct DemoApp: App {
+struct AuthenticatedView: View {
     
-    private let config: ApplicationConfig
-    private let appauth: AppAuthHandler
-    private let model: MainViewModel
+    var body: some View {
     
-    init() {
-        self.config = ApplicationConfig()
-        self.appauth = AppAuthHandler(config: config)
-        self.model = MainViewModel(appauth: appauth)
+        return VStack {
+            
+            Text("authenticated")
+                .labelStyle()
+                .padding(.top, 20)
+            
+            Spacer()
+        }
+        .onAppear(perform: self.onViewCreated)
     }
     
-    var body: some Scene {
-        WindowGroup {
-            MainView(model: self.model)
-        }
+    func onViewCreated() {
+        // process tokens here
+    }
+        
+    func getViewController() -> UIViewController {
+        return UIApplication.shared.windows.first!.rootViewController!
     }
 }

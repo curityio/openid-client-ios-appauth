@@ -1,15 +1,12 @@
-1. Get login completion working
-   DCR to test if registered already
-   Only update ApplicationStateManager on a single thread
-      
-2. Navigate to a new view
-   Implement controls
+1. Implement authenticated view
+   Only do DCR if not done already
 
-3. Implement the new view operations
+2. Implement the new view operations
    Get token refresh working
    Get end session working
-   
-4. Thread safety and leaked resources to check for
+
+3. ApplicationStateManager and AuthState to think more about
+   Simple code and thread safety
 
 ANDROID
 ------

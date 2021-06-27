@@ -18,5 +18,19 @@ import Foundation
 import SwiftCoroutine
 
 class MainViewModel: ObservableObject {
-    var appauth = AppAuthHandler(config: ApplicationConfig())
+
+    let appauth: AppAuthHandler
+    @Published var isAuthenticated = false
+    
+    init(appauth: AppAuthHandler) {
+        self.appauth = appauth
+    }
+
+    func onLoggedIn() {
+        self.isAuthenticated = true
+    }
+
+    func onLoggedOut() {
+        self.isAuthenticated = false
+    }
 }

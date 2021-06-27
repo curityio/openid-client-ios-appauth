@@ -34,7 +34,7 @@ class AppAuthHandler {
         
         let promise = CoPromise<OIDServiceConfiguration>()
         
-        let (issuerUrl, parseError) = self.config.getUrl(value: config.issuer)
+        let (issuerUrl, parseError) = self.config.getIssuerUri()
         if issuerUrl == nil {
             promise.fail(parseError!)
             return promise
@@ -54,7 +54,7 @@ class AppAuthHandler {
                 }
 
                 Logger.info(data: "Discovery document retrieved successfully")
-                Logger.debug(data: metadata.debugDescription)
+                Logger.debug(data: metadata!.description)
                 promise.success(metadata!)
 
             } else {
@@ -74,7 +74,7 @@ class AppAuthHandler {
         
         let promise = CoPromise<OIDRegistrationResponse>()
         
-        let (redirectUri, parseError) = self.config.getUrl(value: self.config.redirectUri)
+        let (redirectUri, parseError) = self.config.getRedirectUri()
         if redirectUri == nil {
             promise.fail(parseError!)
             return promise
@@ -124,7 +124,7 @@ class AppAuthHandler {
         
         let promise = CoPromise<OIDAuthorizationResponse?>()
         
-        let (redirectUri, parseError) = self.config.getUrl(value: self.config.redirectUri)
+        let (redirectUri, parseError) = self.config.getRedirectUri()
         if redirectUri == nil {
             promise.fail(parseError!)
             return promise
@@ -149,11 +149,9 @@ class AppAuthHandler {
             if response != nil {
                 
                 Logger.info(data: "Authorization response received successfully")
-                let code = response!.authorizationCode
-                let state = response!.state
-                if (code != nil && state != nil) {
-                    Logger.debug(data: "CODE: \(code!), STATE: \(state!)")
-                }
+                let code = response!.authorizationCode == nil ? "" : response!.authorizationCode!
+                let state = response!.state == nil ? "" : response!.state!
+                Logger.debug(data: "CODE: \(code), STATE: \(state)")
 
                 promise.success(response!)
 
@@ -178,13 +176,38 @@ class AppAuthHandler {
     /*
      * Handle the authorization response, including the user closing the Chrome Custom Tab
      */
-    func handleAuthorizationResponse() {
-    }
+    func redeemCodeForTokens(
+        registrationResponse: OIDRegistrationResponse,
+        authResponse: OIDAuthorizationResponse) -> CoFuture<OIDTokenResponse> {
 
-    /*
-     * Handle the authorization code grant request to get tokens
-     */
-    func redeemCodeForTokens() {
+        let promise = CoPromise<OIDTokenResponse>()
+
+        var extraParams = [String: String]()
+        extraParams["client_secret"] = registrationResponse.clientSecret
+        let request = authResponse.tokenExchangeRequest(withAdditionalParameters: extraParams)
+
+        OIDAuthorizationService.perform(
+            request!,
+            originalAuthorizationResponse: authResponse) { tokenResponse, ex in
+
+            if tokenResponse != nil {
+
+                Logger.info(data: "Authorization code grant response received successfully")
+                let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
+                let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
+                let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
+                Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
+
+                promise.success(tokenResponse!)
+
+            } else {
+
+                let error = self.createAuthorizationError(title: "Authorization Response Error", ex: ex)
+                promise.fail(error)
+            }
+        }
+
+        return promise
     }
 
     /*

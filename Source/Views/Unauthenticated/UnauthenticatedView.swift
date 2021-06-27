@@ -20,8 +20,8 @@ struct UnauthenticatedView: View, UnauthenticatedViewEvents {
     
     @ObservedObject private var model: UnauthenticatedViewModel
     
-    init(appauth: AppAuthHandler) {
-        self.model = UnauthenticatedViewModel(appauth: appauth)
+    init(model: UnauthenticatedViewModel) {
+        self.model = model
         self.model.events = self
     }
     
@@ -31,7 +31,7 @@ struct UnauthenticatedView: View, UnauthenticatedViewEvents {
         return VStack {
             
             if self.model.error != nil {
-                ErrorView(error: self.model.error!)
+                ErrorView(model: ErrorViewModel(error: self.model.error!))
             }
             
             Text("welcome_message")

@@ -20,8 +20,8 @@ struct ErrorView: View {
 
     @ObservedObject private var model: ErrorViewModel
     
-    init(error: ApplicationError) {
-        self.model = ErrorViewModel(error: error)
+    init(model: ErrorViewModel) {
+        self.model = model
     }
     
     var body: some View {

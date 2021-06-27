@@ -19,17 +19,22 @@ import SwiftCoroutine
 
 class UnauthenticatedViewModel: ObservableObject {
     
-    private let appauth: AppAuthHandler
-    var events: UnauthenticatedViewEvents?
     @Published var error: ApplicationError?
     @Published var isRegistered: Bool
+    var events: UnauthenticatedViewEvents?
+    private var appauth: AppAuthHandler?
+    private var onLoggedIn: (() -> Void)?
+    
+    init() {
 
-    init(appauth: AppAuthHandler) {
-
-        self.appauth = appauth
         self.events = nil
         self.error = nil
         self.isRegistered = false
+    }
+    
+    func initialize(appauth: AppAuthHandler, onLoggedIn: @escaping () -> Void) {
+        self.appauth = appauth
+        self.onLoggedIn = onLoggedIn
     }
     
     /*
@@ -45,8 +50,8 @@ class UnauthenticatedViewModel: ObservableObject {
                 self.error = nil
                 try DispatchQueue.global().await {
                     
-                    ApplicationStateManager.metadata = try self.appauth.fetchMetadata().await()
-                    ApplicationStateManager.registrationResponse = try self.appauth.registerClient(metadata: ApplicationStateManager.metadata!).await()
+                    ApplicationStateManager.metadata = try self.appauth!.fetchMetadata().await()
+                    ApplicationStateManager.registrationResponse = try self.appauth!.registerClient(metadata: ApplicationStateManager.metadata!).await()
                 }
                 
                 self.isRegistered = true
@@ -71,13 +76,22 @@ class UnauthenticatedViewModel: ObservableObject {
             do {
 
                 self.error = nil
-                let response = try self.appauth.performAuthorizationRedirect(
+                let authResponse = try self.appauth!.performAuthorizationRedirect(
                     metadata: ApplicationStateManager.metadata!,
                     registrationResponse: ApplicationStateManager.registrationResponse!,
                     viewController: self.events!.getViewController()
                 ).await()
 
-                if response == nil {
+                if authResponse != nil {
+                    
+                    try DispatchQueue.global().await {
+                        ApplicationStateManager.tokenResponse = try self.appauth!.redeemCodeForTokens(
+                            registrationResponse: ApplicationStateManager.registrationResponse!,
+                            authResponse: authResponse!
+                        ).await()
+                    }
+                    
+                    self.onLoggedIn!()
                 }
 
             } catch {

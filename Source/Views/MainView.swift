@@ -19,9 +19,13 @@ import SwiftUI
 struct MainView: View {
 
     @ObservedObject private var model: MainViewModel
-    
-    init() {
-        self.model = MainViewModel()
+    private let unauthenticatedModel: UnauthenticatedViewModel
+
+    init(model: MainViewModel) {
+
+        self.model = model
+        self.unauthenticatedModel = UnauthenticatedViewModel()
+        self.unauthenticatedModel.initialize(appauth: self.model.appauth, onLoggedIn: self.model.onLoggedIn)
     }
     
     var body: some View {
@@ -32,10 +36,12 @@ struct MainView: View {
                 .headingStyle()
                 .padding(.top, 20)
                 .padding(.leading, 20)
-
-            UnauthenticatedView(appauth: self.model.appauth)
-                
-                
+            
+            if (!self.model.isAuthenticated) {
+                UnauthenticatedView(model: self.unauthenticatedModel)
+            } else {
+                AuthenticatedView()
+            }
         }
     }
 }

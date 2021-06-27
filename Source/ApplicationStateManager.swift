@@ -20,4 +20,5 @@ struct ApplicationStateManager {
     
     static var metadata: OIDServiceConfiguration? = nil
     static var registrationResponse: OIDRegistrationResponse? = nil
+    static var tokenResponse: OIDTokenResponse? = nil
 }
