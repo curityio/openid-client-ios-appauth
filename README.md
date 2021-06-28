@@ -1,24 +1,33 @@
-# openid-client-ios-appauth
+# Curity iOS AppAuth Code Example
 
 [![Quality](https://img.shields.io/badge/quality-demo-red)](https://curity.io/resources/code-examples/status/)
 [![Availability](https://img.shields.io/badge/availability-source-blue)](https://curity.io/resources/code-examples/status/)
 
-# Curity iOS AppAuth Code Example
-
-Demonstrates how to implement an OpenID Connect mobile client using AppAuth libraries
+Demonstrates how to implement an OpenID Connect mobile client using AppAuth libraries.
 
 ## Overview
 
-AppAuth classes are used to handle lifecycle events in line with [Curity Mobile Best Practices](https://curity.io/resources/learn/oauth-for-mobile-apps-best-practices/):
+A simple mobile app that demonstrates OAuth lifecycle events, starting with an `Unauthenticated View`:
+
+![Unauthenticated View](doc/ios-unauthenticated-view.png)
+
+Once authenticated the `Authenticated View` show how to work with tokens and sign out:
+
+![Authenticated View](doc/ios-authenticated-view.png)
+
+The sample also demonstrates handling of AppAuth errors to ensure a reliable app.
+
+## Security
+
+AppAuth classes are used to perform the following security related operations:
 
 * Dynamic Client Registration
 * Logins and Logouts via an ASWebAuthenticationSession window
 * Working with Access Tokens and Token Refresh
-* Dealing with OAuth Error Responses
 
-## Code Sample Details
+## Tutorial
 
-See the [Curity iOS AppAuth Article](https://curity.io/resources/learn/swift-ios-appauth/) for full details on running the Code Example.
+See the [Curity iOS AppAuth Article](https://curity.io/resources/learn/kotlin-ios-appauth/) for full details on how to run the app.
 
 ## More Information
 

@@ -82,7 +82,7 @@ class AppAuthHandler {
         
         var extraParams = [String: String]()
         extraParams["scope"] = self.config.scope
-        extraParams["requires_consent"] = "true"
+        extraParams["requires_consent"] = "false"
         extraParams["post_logout_redirect_uris"] = self.config.postLogoutRedirectUri
         
         let nonTemplatizedRequest = OIDRegistrationRequest(
