@@ -80,9 +80,9 @@ class AuthenticatedViewModel: ObservableObject {
                         metadata: ApplicationStateManager.metadata!,
                         registrationResponse: ApplicationStateManager.registrationResponse!,
                         refreshToken: ApplicationStateManager.tokenResponse!.refreshToken!).await()
-                    
-                    self.processTokens()
                 }
+                
+                self.processTokens()
 
             } catch {
                 

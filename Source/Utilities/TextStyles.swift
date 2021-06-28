@@ -32,9 +32,9 @@ extension Text {
                  .fontWeight(.semibold)
     }
 
-    func valueStyle(textColor: Color = Color.black) -> Text {
+    func valueStyle() -> Text {
 
-        return foregroundColor(textColor)
+        return foregroundColor(Color.blue)
                  .font(.system(size: 16))
                  .fontWeight(.semibold)
     }

@@ -82,7 +82,7 @@ class AppAuthHandler {
         
         var extraParams = [String: String]()
         extraParams["scope"] = self.config.scope
-        extraParams["requires_consent"] = "false"
+        extraParams["requires_consent"] = "true"
         extraParams["post_logout_redirect_uris"] = self.config.postLogoutRedirectUri
         
         let nonTemplatizedRequest = OIDRegistrationRequest(
@@ -167,6 +167,7 @@ class AppAuthHandler {
 
                 } else {
 
+                    
                     let error = self.createAuthorizationError(title: "Authorization Request Error", ex: ex)
                     promise.fail(error)
                 }
@@ -221,9 +222,9 @@ class AppAuthHandler {
     func refreshAccessToken(
             metadata: OIDServiceConfiguration,
             registrationResponse: OIDRegistrationResponse,
-            refreshToken: String) -> CoFuture<OIDTokenResponse> {
+            refreshToken: String) -> CoFuture<OIDTokenResponse?> {
         
-        let promise = CoPromise<OIDTokenResponse>()
+        let promise = CoPromise<OIDTokenResponse?>()
         
         let request = OIDTokenRequest(
             configuration: metadata,
@@ -250,9 +251,17 @@ class AppAuthHandler {
                 promise.success(tokenResponse!)
 
             } else {
+                
+                if ex != nil && self.isRefreshTokenExpiredErrorCode(ex: ex!) {
+                    
+                    Logger.info(data: "Refresh token expired and the user must re-authenticate")
+                    promise.success(nil)
 
-                let error = self.createAuthorizationError(title: "Refresh Token Error", ex: ex)
-                promise.fail(error)
+                } else {
+
+                    let error = self.createAuthorizationError(title: "Refresh Token Error", ex: ex)
+                    promise.fail(error)
+                }
             }
         }
         
@@ -303,6 +312,15 @@ class AppAuthHandler {
      * We can check for specific error codes to handle the user cancelling the ASWebAuthenticationSession window
      */
     private func isUserCancellationErrorCode(ex: Error) -> Bool {
+
+        let error = ex as NSError
+        return error.domain == OIDGeneralErrorDomain && error.code == OIDErrorCode.userCanceledAuthorizationFlow.rawValue
+    }
+    
+    /*
+     * We can check for a specific error code when the refresh token expires and the user needs to re-authenticate
+     */
+    private func isRefreshTokenExpiredErrorCode(ex: Error) -> Bool {
 
         let error = ex as NSError
         return error.domain == OIDGeneralErrorDomain && error.code == OIDErrorCode.userCanceledAuthorizationFlow.rawValue
