@@ -53,7 +53,7 @@ class AppAuthHandler {
                     promise.fail(configurationError)
                 }
 
-                Logger.info(data: "Discovery document retrieved successfully")
+                Logger.info(data: "Metadata retrieved successfully")
                 Logger.debug(data: metadata!.description)
                 promise.success(metadata!)
 
@@ -145,8 +145,9 @@ class AppAuthHandler {
             redirectURL: redirectUri!,
             responseType: OIDResponseTypeCode,
             additionalParameters: extraParams)
-        
-        self.userAgentSession = OIDAuthorizationService.present(request, presenting: viewController) { response, ex in
+
+        let agent = OIDExternalUserAgentIOS(presenting: viewController)
+        self.userAgentSession = OIDAuthorizationService.present(request, externalUserAgent: agent!) { response, ex in
             
             if response != nil {
                 
@@ -218,9 +219,9 @@ class AppAuthHandler {
      * Try to refresh an access token and return null when the refresh token expires
      */
     func refreshAccessToken(
-            refreshToken: String,
             metadata: OIDServiceConfiguration,
-            registrationResponse: OIDRegistrationResponse) -> CoFuture<OIDTokenResponse> {
+            registrationResponse: OIDRegistrationResponse,
+            refreshToken: String) -> CoFuture<OIDTokenResponse> {
         
         let promise = CoPromise<OIDTokenResponse>()
         

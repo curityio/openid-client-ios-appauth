@@ -48,8 +48,14 @@ class UnauthenticatedViewModel: ObservableObject {
                 self.error = nil
                 try DispatchQueue.global().await {
                     
-                    ApplicationStateManager.metadata = try self.appauth!.fetchMetadata().await()
-                    ApplicationStateManager.registrationResponse = try self.appauth!.registerClient(metadata: ApplicationStateManager.metadata!).await()
+                    if ApplicationStateManager.metadata == nil {
+                        ApplicationStateManager.metadata = try self.appauth!.fetchMetadata().await()
+                    }
+                    
+                    if ApplicationStateManager.registrationResponse == nil {
+                        ApplicationStateManager.registrationResponse = try self.appauth!.registerClient(
+                            metadata: ApplicationStateManager.metadata!).await()
+                    }
                 }
                 
                 self.isRegistered = true

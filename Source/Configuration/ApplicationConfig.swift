@@ -20,7 +20,7 @@ import Foundation
 
 struct ApplicationConfig {
 
-    private let issuer = "https://5c300a76b17a.eu.ngrok.io/oauth/v2/oauth-anonymous"
+    private let issuer = "https://bae971bb9a64.eu.ngrok.io/oauth/v2/oauth-anonymous"
     private let redirectUri = "io.curity.client:/callback"
     let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
     let scope = "openid profile"

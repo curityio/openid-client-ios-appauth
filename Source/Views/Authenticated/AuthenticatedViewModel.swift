@@ -77,9 +77,9 @@ class AuthenticatedViewModel: ObservableObject {
                 try DispatchQueue.global().await {
 
                     ApplicationStateManager.tokenResponse = try self.appauth!.refreshAccessToken(
-                        refreshToken: ApplicationStateManager.tokenResponse!.refreshToken!,
                         metadata: ApplicationStateManager.metadata!,
-                        registrationResponse: ApplicationStateManager.registrationResponse!).await()
+                        registrationResponse: ApplicationStateManager.registrationResponse!,
+                        refreshToken: ApplicationStateManager.tokenResponse!.refreshToken!).await()
                     
                     self.processTokens()
                 }
