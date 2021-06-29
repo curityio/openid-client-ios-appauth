@@ -20,7 +20,6 @@ import AppAuth
 
 class UnauthenticatedViewModel: ObservableObject {
 
-    var events: UnauthenticatedViewEvents?
     private var appauth: AppAuthHandler?
     private var onLoggedIn: (() -> Void)?
 
@@ -31,7 +30,6 @@ class UnauthenticatedViewModel: ObservableObject {
 
         self.appauth = appauth
         self.onLoggedIn = onLoggedIn
-        self.events = nil
         self.error = nil
         self.isRegistered = false
     }
@@ -91,7 +89,7 @@ class UnauthenticatedViewModel: ObservableObject {
                 let authorizationResponse = try self.appauth!.performAuthorizationRedirect(
                     metadata: metadata,
                     registrationResponse: registrationResponse,
-                    viewController: self.events!.getViewController()
+                    viewController: self.getViewController()
                 ).await()
 
                 if authorizationResponse != nil {
@@ -119,5 +117,9 @@ class UnauthenticatedViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    private func getViewController() -> UIViewController {
+        return UIApplication.shared.windows.first!.rootViewController!
     }
 }

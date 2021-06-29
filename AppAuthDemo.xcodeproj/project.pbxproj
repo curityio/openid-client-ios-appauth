@@ -22,10 +22,8 @@
 		280AFE08268620240063EAD6 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE07268620240063EAD6 /* ErrorView.swift */; };
 		280AFE0A268624E70063EAD6 /* TextStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE09268624E70063EAD6 /* TextStyles.swift */; };
 		280AFE0C26863F010063EAD6 /* ApplicationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */; };
-		280AFE0E26864B390063EAD6 /* UnauthenticatedViewEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */; };
 		280AFE112687201A0063EAD6 /* AuthenticatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE102687201A0063EAD6 /* AuthenticatedView.swift */; };
 		280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */; };
-		280AFE152688640F0063EAD6 /* AuthenticatedViewEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE142688640F0063EAD6 /* AuthenticatedViewEvents.swift */; };
 		2858770F268B17F70036D88C /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 2858770E268B17F70036D88C /* SwiftJWT */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
@@ -46,10 +44,8 @@
 		280AFE07268620240063EAD6 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		280AFE09268624E70063EAD6 /* TextStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyles.swift; sourceTree = "<group>"; };
 		280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStateManager.swift; sourceTree = "<group>"; };
-		280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedViewEvents.swift; sourceTree = "<group>"; };
 		280AFE102687201A0063EAD6 /* AuthenticatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedView.swift; sourceTree = "<group>"; };
 		280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedViewModel.swift; sourceTree = "<group>"; };
-		280AFE142688640F0063EAD6 /* AuthenticatedViewEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedViewEvents.swift; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -107,7 +103,6 @@
 			children = (
 				280AFDE02685D3150063EAD6 /* UnauthenticatedView.swift */,
 				280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */,
-				280AFE0D26864B390063EAD6 /* UnauthenticatedViewEvents.swift */,
 			);
 			path = Unauthenticated;
 			sourceTree = "<group>";
@@ -134,7 +129,6 @@
 			children = (
 				280AFE102687201A0063EAD6 /* AuthenticatedView.swift */,
 				280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */,
-				280AFE142688640F0063EAD6 /* AuthenticatedViewEvents.swift */,
 			);
 			path = Authenticated;
 			sourceTree = "<group>";
@@ -252,7 +246,6 @@
 			files = (
 				280AFE112687201A0063EAD6 /* AuthenticatedView.swift in Sources */,
 				28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */,
-				280AFE0E26864B390063EAD6 /* UnauthenticatedViewEvents.swift in Sources */,
 				280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */,
 				280AFE002685FD670063EAD6 /* ApplicationError.swift in Sources */,
 				280AFDF72685F09E0063EAD6 /* UnauthenticatedViewModel.swift in Sources */,
@@ -267,7 +260,6 @@
 				280AFDFD2685F4060063EAD6 /* MainViewModel.swift in Sources */,
 				280AFE0C26863F010063EAD6 /* ApplicationStateManager.swift in Sources */,
 				280AFE06268620130063EAD6 /* ErrorViewModel.swift in Sources */,
-				280AFE152688640F0063EAD6 /* AuthenticatedViewEvents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

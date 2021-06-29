@@ -16,13 +16,12 @@
 
 import SwiftUI
 
-struct AuthenticatedView: View, AuthenticatedViewEvents {
+struct AuthenticatedView: View {
     
     @ObservedObject private var model: AuthenticatedViewModel
     
     init(model: AuthenticatedViewModel) {
         self.model = model
-        self.model.events = self
     }
     
     var body: some View {

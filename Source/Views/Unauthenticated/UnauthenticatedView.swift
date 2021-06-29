@@ -16,13 +16,12 @@
 
 import SwiftUI
 
-struct UnauthenticatedView: View, UnauthenticatedViewEvents {
+struct UnauthenticatedView: View {
     
     @ObservedObject private var model: UnauthenticatedViewModel
     
     init(model: UnauthenticatedViewModel) {
         self.model = model
-        self.model.events = self
     }
     
     var body: some View {
@@ -58,9 +57,5 @@ struct UnauthenticatedView: View, UnauthenticatedViewEvents {
     
     func onViewCreated() {
         self.model.registerIfRequired()
-    }
-        
-    func getViewController() -> UIViewController {
-        return UIApplication.shared.windows.first!.rootViewController!
     }
 }

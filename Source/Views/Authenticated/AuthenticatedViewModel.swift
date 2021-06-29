@@ -21,7 +21,6 @@ import SwiftJWT
 
 class AuthenticatedViewModel: ObservableObject {
     
-    var events: AuthenticatedViewEvents?
     private var appauth: AppAuthHandler?
     private var onLoggedOut: (() -> Void)?
 
@@ -40,7 +39,6 @@ class AuthenticatedViewModel: ObservableObject {
 
         self.appauth = appauth
         self.onLoggedOut = onLoggedOut
-        self.events = nil
         
         self.hasRefreshToken = false
         self.hasIdToken = false
@@ -138,7 +136,7 @@ class AuthenticatedViewModel: ObservableObject {
                 try self.appauth!.performEndSessionRedirect(
                     metadata: ApplicationStateManager.metadata!,
                     idToken: ApplicationStateManager.idToken!,
-                    viewController: self.events!.getViewController()
+                    viewController: self.getViewController()
                 ).await()
 
                 ApplicationStateManager.tokenResponse = nil
@@ -153,5 +151,9 @@ class AuthenticatedViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    private func getViewController() -> UIViewController {
+        return UIApplication.shared.windows.first!.rootViewController!
     }
 }
