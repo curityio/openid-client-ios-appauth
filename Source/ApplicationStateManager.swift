@@ -19,12 +19,8 @@ import AppAuth
 struct ApplicationStateManager {
     
     static private var authState: OIDAuthState? = nil
-    static var idToken: String? = nil
-    
-    // GET RID OF
     static private var metadataValue: OIDServiceConfiguration? = nil
-    static private var registrationResponseValue: OIDRegistrationResponse? = nil
-    static private var tokenResponseValue: OIDTokenResponse? = nil
+    static var idToken: String? = nil
     
     static var metadata: OIDServiceConfiguration? {
         get {
@@ -37,19 +33,19 @@ struct ApplicationStateManager {
     
     static var registrationResponse: OIDRegistrationResponse? {
         get {
-            return self.registrationResponseValue
+            return self.authState?.lastRegistrationResponse
         }
         set(value) {
-            self.registrationResponseValue = value
+            self.authState = OIDAuthState(registrationResponse: value!)
         }
     }
     
     static var tokenResponse: OIDTokenResponse? {
         get {
-            return self.tokenResponseValue
+            return self.authState!.lastTokenResponse
         }
         set(value) {
-            self.tokenResponseValue = value
+            self.authState?.update(with: value, error: nil)
         }
     }
 }
