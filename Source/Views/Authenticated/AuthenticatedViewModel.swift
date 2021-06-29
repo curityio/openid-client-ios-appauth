@@ -16,6 +16,7 @@
 
 import Foundation
 import SwiftCoroutine
+import AppAuth
 
 class AuthenticatedViewModel: ObservableObject {
     
@@ -74,14 +75,20 @@ class AuthenticatedViewModel: ObservableObject {
 
             do {
 
+                let metadata = ApplicationStateManager.metadata!
+                let registrationResponse = ApplicationStateManager.registrationResponse!
+                let refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
+
+                var tokenResponse: OIDTokenResponse? = nil
                 try DispatchQueue.global().await {
 
-                    ApplicationStateManager.tokenResponse = try self.appauth!.refreshAccessToken(
-                        metadata: ApplicationStateManager.metadata!,
-                        registrationResponse: ApplicationStateManager.registrationResponse!,
-                        refreshToken: ApplicationStateManager.tokenResponse!.refreshToken!).await()
+                    tokenResponse = try self.appauth!.refreshAccessToken(
+                        metadata: metadata,
+                        registrationResponse: registrationResponse,
+                        refreshToken: refreshToken).await()
                 }
                 
+                ApplicationStateManager.tokenResponse = tokenResponse
                 self.processTokens()
 
             } catch {
@@ -103,13 +110,18 @@ class AuthenticatedViewModel: ObservableObject {
 
             do {
 
+                let metadata = ApplicationStateManager.metadata!
+                let idToken = ApplicationStateManager.idToken!
                 self.error = nil
+
                 try self.appauth!.performEndSessionRedirect(
-                    metadata: ApplicationStateManager.metadata!,
-                    idToken: ApplicationStateManager.idToken!,
+                    metadata: metadata,
+                    idToken: idToken,
                     viewController: self.events!.getViewController()
                 ).await()
-                
+
+                ApplicationStateManager.tokenResponse = nil
+                ApplicationStateManager.idToken = nil
                 self.onLoggedOut!()
 
             } catch {

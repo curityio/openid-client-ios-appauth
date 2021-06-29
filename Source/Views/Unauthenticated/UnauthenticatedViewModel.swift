@@ -16,6 +16,7 @@
 
 import Foundation
 import SwiftCoroutine
+import AppAuth
 
 class UnauthenticatedViewModel: ObservableObject {
 
@@ -46,18 +47,22 @@ class UnauthenticatedViewModel: ObservableObject {
             do {
 
                 self.error = nil
+                var metadata = ApplicationStateManager.metadata
+                var registrationResponse = ApplicationStateManager.registrationResponse
+
                 try DispatchQueue.global().await {
                     
-                    if ApplicationStateManager.metadata == nil {
-                        ApplicationStateManager.metadata = try self.appauth!.fetchMetadata().await()
+                    if metadata == nil {
+                        metadata = try self.appauth!.fetchMetadata().await()
                     }
                     
-                    if ApplicationStateManager.registrationResponse == nil {
-                        ApplicationStateManager.registrationResponse = try self.appauth!.registerClient(
-                            metadata: ApplicationStateManager.metadata!).await()
+                    if registrationResponse == nil {
+                        registrationResponse = try self.appauth!.registerClient(metadata: metadata!).await()
                     }
                 }
                 
+                ApplicationStateManager.metadata = metadata
+                ApplicationStateManager.registrationResponse = registrationResponse
                 self.isRegistered = true
                 
             } catch {
@@ -78,27 +83,31 @@ class UnauthenticatedViewModel: ObservableObject {
         DispatchQueue.main.startCoroutine {
 
             do {
-
+                
+                let metadata = ApplicationStateManager.metadata!
+                let registrationResponse = ApplicationStateManager.registrationResponse!
                 self.error = nil
-                let authResponse = try self.appauth!.performAuthorizationRedirect(
-                    metadata: ApplicationStateManager.metadata!,
-                    registrationResponse: ApplicationStateManager.registrationResponse!,
+
+                let authorizationResponse = try self.appauth!.performAuthorizationRedirect(
+                    metadata: metadata,
+                    registrationResponse: registrationResponse,
                     viewController: self.events!.getViewController()
                 ).await()
 
-                if authResponse != nil {
+                if authorizationResponse != nil {
                     
+                    var tokenResponse: OIDTokenResponse? = nil
                     try DispatchQueue.global().await {
                         
-                        ApplicationStateManager.tokenResponse = try self.appauth!.redeemCodeForTokens(
-                            registrationResponse: ApplicationStateManager.registrationResponse!,
-                            authResponse: authResponse!
+                        tokenResponse = try self.appauth!.redeemCodeForTokens(
+                            registrationResponse: registrationResponse,
+                            authResponse: authorizationResponse!
                             
                         ).await()
-                        
-                        ApplicationStateManager.idToken = ApplicationStateManager.tokenResponse?.idToken
                     }
                     
+                    ApplicationStateManager.tokenResponse = tokenResponse
+                    ApplicationStateManager.idToken = tokenResponse?.idToken
                     self.onLoggedIn!()
                 }
 
