@@ -17,6 +17,7 @@
 import Foundation
 import SwiftCoroutine
 import AppAuth
+import SwiftJWT
 
 class AuthenticatedViewModel: ObservableObject {
     
@@ -30,6 +31,10 @@ class AuthenticatedViewModel: ObservableObject {
     @Published var accessToken: String
     @Published var refreshToken: String
     @Published var error: ApplicationError?
+    
+    struct IDTokenClaims: Claims {
+        var sub: String
+    }
     
     init(appauth: AppAuthHandler, onLoggedOut: @escaping () -> Void) {
 
@@ -62,7 +67,21 @@ class AuthenticatedViewModel: ObservableObject {
         }
         
         if ApplicationStateManager.tokenResponse?.idToken != nil {
+            
+            let idToken = ApplicationStateManager.tokenResponse!.idToken!
             self.hasIdToken = true
+            
+            do {
+
+                let jwt = try JWT<IDTokenClaims>(jwtString: idToken)
+                self.subject = jwt.claims.sub
+
+            } catch {
+                
+                let appError = ApplicationError(title: "Failed to parse ID Token", description: error.localizedDescription)
+                Logger.error(data: appError.description)
+                self.error = appError
+            }
         }
     }
 
