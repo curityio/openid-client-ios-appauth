@@ -78,8 +78,9 @@ class AuthenticatedViewModel: ObservableObject {
                 let metadata = ApplicationStateManager.metadata!
                 let registrationResponse = ApplicationStateManager.registrationResponse!
                 let refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
-
                 var tokenResponse: OIDTokenResponse? = nil
+                self.error = nil
+
                 try DispatchQueue.global().await {
 
                     tokenResponse = try self.appauth!.refreshAccessToken(
@@ -89,6 +90,9 @@ class AuthenticatedViewModel: ObservableObject {
                 }
                 
                 ApplicationStateManager.tokenResponse = tokenResponse
+                if (tokenResponse == nil) {
+                    self.onLoggedOut!()
+                }
                 self.processTokens()
 
             } catch {
@@ -110,13 +114,11 @@ class AuthenticatedViewModel: ObservableObject {
 
             do {
 
-                let metadata = ApplicationStateManager.metadata!
-                let idToken = ApplicationStateManager.idToken!
                 self.error = nil
 
                 try self.appauth!.performEndSessionRedirect(
-                    metadata: metadata,
-                    idToken: idToken,
+                    metadata: ApplicationStateManager.metadata!,
+                    idToken: ApplicationStateManager.idToken!,
                     viewController: self.events!.getViewController()
                 ).await()
 

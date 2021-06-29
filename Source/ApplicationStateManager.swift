@@ -18,8 +18,38 @@ import AppAuth
 
 struct ApplicationStateManager {
     
-    static var metadata: OIDServiceConfiguration? = nil
-    static var registrationResponse: OIDRegistrationResponse? = nil
-    static var tokenResponse: OIDTokenResponse? = nil
+    static private var authState: OIDAuthState? = nil
     static var idToken: String? = nil
+    
+    // GET RID OF
+    static private var metadataValue: OIDServiceConfiguration? = nil
+    static private var registrationResponseValue: OIDRegistrationResponse? = nil
+    static private var tokenResponseValue: OIDTokenResponse? = nil
+    
+    static var metadata: OIDServiceConfiguration? {
+        get {
+            return self.metadataValue
+        }
+        set(value) {
+            self.metadataValue = value
+        }
+    }
+    
+    static var registrationResponse: OIDRegistrationResponse? {
+        get {
+            return self.registrationResponseValue
+        }
+        set(value) {
+            self.registrationResponseValue = value
+        }
+    }
+    
+    static var tokenResponse: OIDTokenResponse? {
+        get {
+            return self.tokenResponseValue
+        }
+        set(value) {
+            self.tokenResponseValue = value
+        }
+    }
 }
