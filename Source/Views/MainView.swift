@@ -44,5 +44,7 @@ struct MainView: View {
                 AuthenticatedView(model: self.authenticatedModel)
             }
         }
+        .onAppear(perform: ApplicationStateManager.load)
+        .onDisappear(perform: ApplicationStateManager.save)
     }
 }

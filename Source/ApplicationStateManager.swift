@@ -15,12 +15,53 @@
 //
 
 import AppAuth
+import SwiftKeychainWrapper
 
 struct ApplicationStateManager {
     
     static private var authState: OIDAuthState? = nil
     static private var metadataValue: OIDServiceConfiguration? = nil
     static var idToken: String? = nil
+    private static var storageKey = "io.curity.client"
+    
+    static func load() {
+        
+        let data = KeychainWrapper.standard.data(forKey: self.storageKey + ".registration")
+        if data != nil {
+        
+            do {
+            
+                let registrationResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data!) as? OIDRegistrationResponse
+                if registrationResponse != nil {
+                    self.authState = OIDAuthState(registrationResponse: registrationResponse!)
+                }
+            } catch {
+                Logger.error(data: "Problem encountered loading application state")
+            }
+        }
+        
+        self.idToken = KeychainWrapper.standard.string(forKey: self.storageKey + ".idtoken")
+    }
+    
+    static func save() {
+        
+        if self.authState?.lastRegistrationResponse != nil {
+            
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: self.authState!.lastRegistrationResponse!, requiringSecureCoding: false)
+                KeychainWrapper.standard.set(data, forKey: self.storageKey + ".registration")
+
+            } catch {
+                Logger.error(data: "Problem encountered saving application state")
+            }
+        }
+        
+        if idToken != nil {
+            KeychainWrapper.standard.set(idToken!, forKey: self.storageKey + ".idtoken")
+        } else {
+            KeychainWrapper.standard.removeObject(forKey: self.storageKey + ".idtoken")
+        }
+    }
     
     static var metadata: OIDServiceConfiguration? {
         get {

@@ -25,6 +25,7 @@
 		280AFE112687201A0063EAD6 /* AuthenticatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE102687201A0063EAD6 /* AuthenticatedView.swift */; };
 		280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */; };
 		2858770F268B17F70036D88C /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 2858770E268B17F70036D88C /* SwiftJWT */; };
+		28587714268C542B0036D88C /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 28587713268C542B0036D88C /* SwiftKeychainWrapper */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
 		28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B6C4F02685CC3F00241CE3 /* Assets.xcassets */; };
@@ -60,6 +61,7 @@
 			files = (
 				280AFDED2685EB9C0063EAD6 /* AppAuth in Frameworks */,
 				280AFDF02685EBB90063EAD6 /* SwiftCoroutine in Frameworks */,
+				28587714268C542B0036D88C /* SwiftKeychainWrapper in Frameworks */,
 				2858770F268B17F70036D88C /* SwiftJWT in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,6 +187,7 @@
 				280AFDEC2685EB9C0063EAD6 /* AppAuth */,
 				280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */,
 				2858770E268B17F70036D88C /* SwiftJWT */,
+				28587713268C542B0036D88C /* SwiftKeychainWrapper */,
 			);
 			productName = client;
 			productReference = 28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */;
@@ -217,6 +220,7 @@
 				280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
 				280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */,
 				2858770D268B17F70036D88C /* XCRemoteSwiftPackageReference "Swift-JWT" */,
+				28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
 			);
 			productRefGroup = 28B6C4EA2685CC3E00241CE3 /* Products */;
 			projectDirPath = "";
@@ -472,6 +476,14 @@
 				minimumVersion = 3.6.200;
 			};
 		};
+		28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -489,6 +501,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2858770D268B17F70036D88C /* XCRemoteSwiftPackageReference "Swift-JWT" */;
 			productName = SwiftJWT;
+		};
+		28587713268C542B0036D88C /* SwiftKeychainWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */;
+			productName = SwiftKeychainWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
