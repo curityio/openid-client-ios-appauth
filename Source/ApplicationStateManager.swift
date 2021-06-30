@@ -36,7 +36,7 @@ struct ApplicationStateManager {
                     self.authState = OIDAuthState(registrationResponse: registrationResponse!)
                 }
             } catch {
-                Logger.error(data: "Problem encountered loading application state")
+                Logger.error(data: "Problem encountered loading application state: \(error)")
             }
         }
         
@@ -52,7 +52,7 @@ struct ApplicationStateManager {
                 KeychainWrapper.standard.set(data, forKey: self.storageKey + ".registration")
 
             } catch {
-                Logger.error(data: "Problem encountered saving application state")
+                Logger.error(data: "Problem encountered saving application state: \(error)")
             }
         }
         
