@@ -27,7 +27,7 @@ AppAuth classes are used to perform the following security related operations:
 
 ## Tutorial
 
-See the [Curity iOS AppAuth Article](https://curity.io/resources/learn/kotlin-ios-appauth/) for full details on how to run the app.
+See the [Curity iOS AppAuth Article](https://curity.io/resources/learn/swift-ios-appauth/) for full details on how to run the app.
 
 ## More Information
 
