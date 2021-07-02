@@ -1,0 +1,8 @@
+"main_title" = "Curity AppAuth Demo App";
+"welcome_message" = "Welcome to the SwiftUI AppAuth demo";
+"start_authentication" = "Start Authentication";
+"subject" = "Subject";
+"access_token" = "Access Token";
+"refresh_token" = "Refresh Token";
+"refresh_access_token" = "Refresh Access Token";
+"sign_out" = "Sign Out";
