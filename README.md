@@ -25,8 +25,8 @@ An ngrok tunnel enables mobile connectivity to the Identity Server's endpoints.
 ./start-idsvr.sh
 ```
 
-In XCode 12.5 or later run the app by opening the root folder.\
-Sign in as the following preconfigured user account:
+In Xcode run the app by opening the root folder.\
+When prompted to sign in, do so as the following preconfigured user account:
 
 - User: `demouser`
 - Password: `Password1`
