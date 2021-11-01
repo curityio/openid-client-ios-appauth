@@ -13,7 +13,7 @@ if [ ! -f './license.json' ]; then
 fi
 
 #
-# Download deployment resources
+# Download mobile deployment resources
 #
 git submodule update --init --remote --rebase
 if [ $? -ne 0 ]; then
@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Run the deployment script and provide the path to the configuration file
+# Run the deployment script to get an NGROK URL and deploy the Curity Identity Server 
 #
 cp ./license.json deployment/appauth/license.json
 ./deployment/appauth/start.sh
@@ -32,7 +32,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Update the mobile app configuration with the Identity Server base URL
+# Update the mobile app configuration with the Identity Server URL
 #
 CONFIG_FILE_PATH='./config.json'
 AUTHORITY_URL=$(cat './deployment/appauth/output.txt')
