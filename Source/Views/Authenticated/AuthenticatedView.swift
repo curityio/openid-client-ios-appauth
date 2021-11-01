@@ -27,8 +27,8 @@ struct AuthenticatedView: View {
     var body: some View {
     
         let deviceWidth = UIScreen.main.bounds.size.width
-        let refreshDisabled = !self.model.hasRefreshToken
-        let signOutDisabled = !self.model.hasIdToken
+        let refreshEnabled = self.model.hasRefreshToken
+        let signOutEnabled = self.model.hasIdToken
 
         return VStack {
             
@@ -75,8 +75,8 @@ struct AuthenticatedView: View {
             .padding(.top, 20)
             .padding(.leading, 20)
             .padding(.trailing, 20)
-            .buttonStyle(CustomButtonStyle(disabled: refreshDisabled))
-            .disabled(refreshDisabled)
+            .buttonStyle(CustomButtonStyle(disabled: !refreshEnabled))
+            .disabled(!refreshEnabled)
             
             Button(action: self.model.startLogout) {
                Text("sign_out")
@@ -84,8 +84,8 @@ struct AuthenticatedView: View {
             .padding(.top, 20)
             .padding(.leading, 20)
             .padding(.trailing, 20)
-            .buttonStyle(CustomButtonStyle(disabled: signOutDisabled))
-            .disabled(signOutDisabled)
+            .buttonStyle(CustomButtonStyle(disabled: !signOutEnabled))
+            .disabled(!signOutEnabled)
             
             Spacer()
         }

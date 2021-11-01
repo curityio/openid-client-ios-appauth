@@ -17,53 +17,46 @@
 import AppAuth
 import SwiftKeychainWrapper
 
-struct ApplicationStateManager {
+class ApplicationStateManager {
     
-    static private var authState: OIDAuthState? = nil
-    static private var metadataValue: OIDServiceConfiguration? = nil
-    static var idToken: String? = nil
-    private static var storageKey = "io.curity.client"
-    
-    static func load() {
-        
-        let data = KeychainWrapper.standard.data(forKey: self.storageKey + ".registration")
-        if data != nil {
-        
-            do {
-            
-                let registrationResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data!) as? OIDRegistrationResponse
-                if registrationResponse != nil {
-                    self.authState = OIDAuthState(registrationResponse: registrationResponse!)
-                }
-            } catch {
-                Logger.error(data: "Problem encountered loading application state: \(error)")
-            }
-        }
-        
-        self.idToken = KeychainWrapper.standard.string(forKey: self.storageKey + ".idtoken")
-    }
-    
-    static func save() {
-        
-        if self.authState?.lastRegistrationResponse != nil {
-            
-            do {
-                let data = try NSKeyedArchiver.archivedData(withRootObject: self.authState!.lastRegistrationResponse!, requiringSecureCoding: false)
-                KeychainWrapper.standard.set(data, forKey: self.storageKey + ".registration")
+    private var authState: OIDAuthState
+    private var metadataValue: OIDServiceConfiguration? = nil
+    var idToken: String? = nil
+    private var storageKey = "io.curity.client"
 
-            } catch {
-                Logger.error(data: "Problem encountered saving application state: \(error)")
-            }
-        }
+    /*
+     * Initialize the app's state when it starts
+     */
+    init() {
+        self.authState = OIDAuthState(authorizationResponse: nil, tokenResponse: nil, registrationResponse: nil)
+    }
+
+    /*
+     * Store tokens in memory
+     */
+    func saveTokens(tokenResponse: OIDTokenResponse) {
         
-        if idToken != nil {
-            KeychainWrapper.standard.set(idToken!, forKey: self.storageKey + ".idtoken")
-        } else {
-            KeychainWrapper.standard.removeObject(forKey: self.storageKey + ".idtoken")
+        // When refreshing tokens, the Curity Identity Server does not issue a new ID token
+        // The AppAuth code does not allow us to update the token response with the original ID token
+        // Therefore we store the ID token separately
+        if (tokenResponse.idToken != nil) {
+            self.idToken = tokenResponse.idToken
         }
+    
+        self.authState.update(with: tokenResponse, error: nil)
     }
     
-    static var metadata: OIDServiceConfiguration? {
+    /*
+     * Clear tokens upon logout or when the session expires
+     */
+    func clearTokens() {
+        self.authState = OIDAuthState(authorizationResponse: nil, tokenResponse: nil, registrationResponse: nil)
+        self.idToken = nil
+        
+        // KeychainWrapper.standard.removeObject(forKey: self.storageKey + ".token")
+    }
+    
+    var metadata: OIDServiceConfiguration? {
         get {
             return self.metadataValue
         }
@@ -72,21 +65,9 @@ struct ApplicationStateManager {
         }
     }
     
-    static var registrationResponse: OIDRegistrationResponse? {
+    var tokenResponse: OIDTokenResponse? {
         get {
-            return self.authState?.lastRegistrationResponse
-        }
-        set(value) {
-            self.authState = OIDAuthState(registrationResponse: value!)
-        }
-    }
-    
-    static var tokenResponse: OIDTokenResponse? {
-        get {
-            return self.authState!.lastTokenResponse
-        }
-        set(value) {
-            self.authState?.update(with: value, error: nil)
+            return self.authState.lastTokenResponse
         }
     }
 }
