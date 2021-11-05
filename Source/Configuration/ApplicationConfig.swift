@@ -18,12 +18,21 @@
 
 import Foundation
 
-struct ApplicationConfig {
+struct ApplicationConfig: Decodable {
 
-    private let issuer = "https://login.example.com/oauth/v2/oauth-anonymous"
-    private let redirectUri = "io.curity.client:/callback"
-    let postLogoutRedirectUri = "io.curity.client:/logoutcallback"
-    let scope = "openid profile"
+    let issuer: String
+    let clientID: String
+    let redirectUri: String
+    let postLogoutRedirectUri: String
+    let scope: String
+    
+    init() {
+        self.issuer = ""
+        self.clientID = ""
+        self.redirectUri = ""
+        self.postLogoutRedirectUri = ""
+        self.scope = ""
+    }
     
     func getIssuerUri() -> (URL?, Error?) {
         

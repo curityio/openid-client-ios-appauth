@@ -20,93 +20,68 @@ import AppAuth
 
 class UnauthenticatedViewModel: ObservableObject {
 
-    private var appauth: AppAuthHandler?
-    private var onLoggedIn: (() -> Void)?
+    private let config: ApplicationConfig
+    private let state: ApplicationStateManager
+    private let appauth: AppAuthHandler
+    private let onLoggedIn: () -> Void
 
     @Published var error: ApplicationError?
-    @Published var isRegistered: Bool
     
-    init(appauth: AppAuthHandler, onLoggedIn: @escaping () -> Void) {
+    init(
+        config: ApplicationConfig,
+        state: ApplicationStateManager,
+        appauth: AppAuthHandler,
+        onLoggedIn: @escaping () -> Void) {
 
+        self.config = config
+        self.state = state
         self.appauth = appauth
         self.onLoggedIn = onLoggedIn
         self.error = nil
-        self.isRegistered = false
     }
     
     /*
-     * Startup handling to lookup metadata and do the dynamic client registration if required
-     * Make HTTP requests on a worker thread and then perform updates on the UI thread
-     */
-    func registerIfRequired() {
-        
-        DispatchQueue.main.startCoroutine {
-            
-            do {
-
-                self.error = nil
-                var metadata = ApplicationStateManager.metadata
-                var registrationResponse = ApplicationStateManager.registrationResponse
-
-                try DispatchQueue.global().await {
-                    
-                    if metadata == nil {
-                        metadata = try self.appauth!.fetchMetadata().await()
-                    }
-                    
-                    if registrationResponse == nil {
-                        registrationResponse = try self.appauth!.registerClient(metadata: metadata!).await()
-                    }
-                }
-                
-                ApplicationStateManager.metadata = metadata
-                ApplicationStateManager.registrationResponse = registrationResponse
-                self.isRegistered = true
-                
-            } catch {
-                
-                let appError = error as? ApplicationError
-                if appError != nil {
-                    self.error = appError!
-                }
-            }
-        }
-    }
-    
-    /*
-     * Run the authorization redirect on the UI thread, then redeem the code for tokens on a background thread
+     * Run front channel operations on the UI thread and back channel operations on a background thread
      */
     func startLogin() {
 
         DispatchQueue.main.startCoroutine {
 
             do {
-                
-                let metadata = ApplicationStateManager.metadata!
-                let registrationResponse = ApplicationStateManager.registrationResponse!
-                self.error = nil
 
-                let authorizationResponse = try self.appauth!.performAuthorizationRedirect(
-                    metadata: metadata,
-                    registrationResponse: registrationResponse,
+                // Get metadata if required
+                var metadata: OIDServiceConfiguration? = nil
+                if metadata == nil {
+                    try DispatchQueue.global().await {
+                        metadata = try self.appauth.fetchMetadata().await()
+                    }
+                }
+
+                // Then redirect on the UI thread
+                self.error = nil
+                let authorizationResponse = try self.appauth.performAuthorizationRedirect(
+                    metadata: metadata!,
+                    clientID: self.config.clientID,
                     viewController: self.getViewController()
                 ).await()
 
                 if authorizationResponse != nil {
-                    
+
+                    // Redeem the code for tokens
                     var tokenResponse: OIDTokenResponse? = nil
                     try DispatchQueue.global().await {
                         
-                        tokenResponse = try self.appauth!.redeemCodeForTokens(
-                            registrationResponse: registrationResponse,
+                        tokenResponse = try self.appauth.redeemCodeForTokens(
+                            clientID: self.config.clientID,
                             authResponse: authorizationResponse!
                             
                         ).await()
                     }
-                    
-                    ApplicationStateManager.tokenResponse = tokenResponse
-                    ApplicationStateManager.idToken = tokenResponse?.idToken
-                    self.onLoggedIn!()
+
+                    // Update application state, then move the app to the authenticated view
+                    self.state.metadata = metadata
+                    self.state.saveTokens(tokenResponse: tokenResponse!)
+                    self.onLoggedIn()
                 }
 
             } catch {

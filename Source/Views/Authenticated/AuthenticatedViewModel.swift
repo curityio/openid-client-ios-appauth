@@ -20,9 +20,11 @@ import AppAuth
 import SwiftJWT
 
 class AuthenticatedViewModel: ObservableObject {
-    
-    private var appauth: AppAuthHandler?
-    private var onLoggedOut: (() -> Void)?
+
+    private let config: ApplicationConfig
+    private let state: ApplicationStateManager
+    private let appauth: AppAuthHandler
+    private let onLoggedOut: (() -> Void)
 
     @Published var hasRefreshToken: Bool
     @Published var hasIdToken: Bool
@@ -35,11 +37,16 @@ class AuthenticatedViewModel: ObservableObject {
         var sub: String
     }
     
-    init(appauth: AppAuthHandler, onLoggedOut: @escaping () -> Void) {
+    init(
+        config: ApplicationConfig,
+        state: ApplicationStateManager,
+        appauth: AppAuthHandler,
+        onLoggedOut: @escaping () -> Void) {
 
+        self.config = config
+        self.state = state
         self.appauth = appauth
         self.onLoggedOut = onLoggedOut
-        
         self.hasRefreshToken = false
         self.hasIdToken = false
         self.subject = ""
@@ -47,26 +54,24 @@ class AuthenticatedViewModel: ObservableObject {
         self.refreshToken = ""
         self.error = nil
     }
-    
+
     /*
      * Show token information after login
      */
     func processTokens() {
 
-        self.subject = "demouser"
-        
-        if ApplicationStateManager.tokenResponse?.accessToken != nil {
-            self.accessToken = ApplicationStateManager.tokenResponse!.accessToken!
+        if self.state.tokenResponse?.accessToken != nil {
+            self.accessToken = self.state.tokenResponse!.accessToken!
         }
 
-        if ApplicationStateManager.tokenResponse?.refreshToken != nil {
+        if self.state.tokenResponse?.refreshToken != nil {
             self.hasRefreshToken = true
-            self.refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
+            self.refreshToken = self.state.tokenResponse!.refreshToken!
         }
         
-        if ApplicationStateManager.tokenResponse?.idToken != nil {
+        if self.state.idToken != nil {
             
-            let idToken = ApplicationStateManager.tokenResponse!.idToken!
+            let idToken = self.state.idToken!
             self.hasIdToken = true
             
             do {
@@ -92,25 +97,28 @@ class AuthenticatedViewModel: ObservableObject {
 
             do {
 
-                let metadata = ApplicationStateManager.metadata!
-                let registrationResponse = ApplicationStateManager.registrationResponse!
-                let refreshToken = ApplicationStateManager.tokenResponse!.refreshToken!
+                let metadata = self.state.metadata!
+                let refreshToken = self.state.tokenResponse!.refreshToken!
                 var tokenResponse: OIDTokenResponse? = nil
                 self.error = nil
 
                 try DispatchQueue.global().await {
 
-                    tokenResponse = try self.appauth!.refreshAccessToken(
+                    tokenResponse = try self.appauth.refreshAccessToken(
                         metadata: metadata,
-                        registrationResponse: registrationResponse,
+                        clientID: self.config.clientID,
                         refreshToken: refreshToken).await()
                 }
                 
-                ApplicationStateManager.tokenResponse = tokenResponse
-                if (tokenResponse == nil) {
-                    self.onLoggedOut!()
+                if tokenResponse != nil {
+                    self.state.saveTokens(tokenResponse: tokenResponse!)
+                    self.processTokens()
+                    
+                } else {
+                    self.state.clearTokens()
+                    self.onLoggedOut()
                 }
-                self.processTokens()
+                
 
             } catch {
                 
@@ -133,15 +141,14 @@ class AuthenticatedViewModel: ObservableObject {
 
                 self.error = nil
 
-                try self.appauth!.performEndSessionRedirect(
-                    metadata: ApplicationStateManager.metadata!,
-                    idToken: ApplicationStateManager.idToken!,
+                try self.appauth.performEndSessionRedirect(
+                    metadata: self.state.metadata!,
+                    idToken: self.state.idToken!,
                     viewController: self.getViewController()
                 ).await()
 
-                ApplicationStateManager.tokenResponse = nil
-                ApplicationStateManager.idToken = nil
-                self.onLoggedOut!()
+                self.state.clearTokens()
+                self.onLoggedOut()
 
             } catch {
                 

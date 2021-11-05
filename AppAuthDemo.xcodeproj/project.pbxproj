@@ -24,6 +24,8 @@
 		280AFE0C26863F010063EAD6 /* ApplicationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */; };
 		280AFE112687201A0063EAD6 /* AuthenticatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE102687201A0063EAD6 /* AuthenticatedView.swift */; };
 		280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */; };
+		2814AFED270ED9C60009BDA6 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 2814AFEC270ED9C60009BDA6 /* config.json */; };
+		2814AFEF270EDA3D0009BDA6 /* ApplicationConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2814AFEE270EDA3D0009BDA6 /* ApplicationConfigLoader.swift */; };
 		2858770F268B17F70036D88C /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 2858770E268B17F70036D88C /* SwiftJWT */; };
 		28587714268C542B0036D88C /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 28587713268C542B0036D88C /* SwiftKeychainWrapper */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
@@ -47,6 +49,8 @@
 		280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStateManager.swift; sourceTree = "<group>"; };
 		280AFE102687201A0063EAD6 /* AuthenticatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedView.swift; sourceTree = "<group>"; };
 		280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedViewModel.swift; sourceTree = "<group>"; };
+		2814AFEC270ED9C60009BDA6 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		2814AFEE270EDA3D0009BDA6 /* ApplicationConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationConfigLoader.swift; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -96,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				280AFDF92685F2BC0063EAD6 /* ApplicationConfig.swift */,
+				2814AFEE270EDA3D0009BDA6 /* ApplicationConfigLoader.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -139,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				28B6C4EB2685CC3E00241CE3 /* Source */,
+				2814AFEC270ED9C60009BDA6 /* config.json */,
 				28B6C4F52685CC3F00241CE3 /* Info.plist */,
 				28B6C4F02685CC3F00241CE3 /* Assets.xcassets */,
 				28B6C4EA2685CC3E00241CE3 /* Products */,
@@ -238,6 +244,7 @@
 			files = (
 				28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */,
 				280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */,
+				2814AFED270ED9C60009BDA6 /* config.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +263,7 @@
 				280AFDF32685EDE40063EAD6 /* AppAuthHandler.swift in Sources */,
 				280AFDE42685D4BD0063EAD6 /* CustomButtonStyle.swift in Sources */,
 				280AFE0326861E350063EAD6 /* Logger.swift in Sources */,
+				2814AFEF270EDA3D0009BDA6 /* ApplicationConfigLoader.swift in Sources */,
 				280AFDE12685D3150063EAD6 /* UnauthenticatedView.swift in Sources */,
 				280AFE08268620240063EAD6 /* ErrorView.swift in Sources */,
 				28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */,
@@ -400,7 +408,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.curity.identityserver.client;
+				PRODUCT_BUNDLE_IDENTIFIER = io.curity.identityserver.appauth;
 				PRODUCT_NAME = AppAuthDemo;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -421,7 +429,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.curity.identityserver.client;
+				PRODUCT_BUNDLE_IDENTIFIER = io.curity.identityserver.appauth;
 				PRODUCT_NAME = AppAuthDemo;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

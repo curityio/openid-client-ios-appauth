@@ -5,29 +5,41 @@
 
 Demonstrates how to implement an OpenID Connect mobile client using AppAuth libraries.
 
-## Overview
+## Tutorial Documentation
 
-A simple mobile app that demonstrates OAuth lifecycle events, starting with an `Unauthenticated View`:
+The [Tutorial Walkthrough](https://curity.io/resources/learn/swift-ios-appauth) explains the complete configuration and behavior.
 
-![Unauthenticated View](doc/ios-unauthenticated-view.png)
+## Quick Start
+
+The easiest way to run the code example is via an automated script as explained in the [Mobile Setup Article](https://curity.io/resources/learn/mobile-setup-ngrok):
+
+- Copy a license.json file into the code example root folder
+- Edit the `./start-idsvr.sh` script to use either a local Docker URL on an ngrok internet URL
+- Run the script to deploy a preconfigured Curity Identity Server via Docker
+- Build and run the mobile app from Xcode
+- Sign in with the preconfigured user account `demouser / Password1`
+- Run `./stop-idsvr.sh` when you want to free Docker resources
+
+## User Experience
+
+The example mobile app demonstrates OAuth lifecycle events, starting with an `Unauthenticated View`:
+
+![Unauthenticated View](images/ios-unauthenticated-view.png)
 
 Once authenticated the `Authenticated View` show how to work with tokens and sign out:
 
-![Authenticated View](doc/ios-authenticated-view.png)
+![Authenticated View](images/ios-authenticated-view.png)
 
 The example app also demonstrates reliable handling of AppAuth errors.
 
 ## Security
 
-AppAuth classes are used to perform the following security related operations:
+AppAuth classes are used to perform the following security related operations accordng to [RFC8252](https://datatracker.ietf.org/doc/html/rfc8252):
 
-* Dynamic Client Registration
-* Logins and Logouts via an ASWebAuthenticationSession window
-* Working with Access Tokens and Token Refresh
+* Logins and Logouts via a secure ASWebAuthenticationSession window
+* Use of Authorization Code Flow (PKCE)
 
-## Tutorial
-
-See the [Curity iOS AppAuth Article](https://curity.io/resources/learn/swift-ios-appauth/) for full details on how to run the app.
+![Secure Window](images/secure-login-window.png)
 
 ## More Information
 

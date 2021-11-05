@@ -19,14 +19,9 @@ import SwiftUI
 struct MainView: View {
 
     @ObservedObject private var model: MainViewModel
-    private let unauthenticatedModel: UnauthenticatedViewModel
-    private let authenticatedModel: AuthenticatedViewModel
 
     init(model: MainViewModel) {
-
         self.model = model
-        self.unauthenticatedModel = UnauthenticatedViewModel(appauth: model.appauth, onLoggedIn: model.onLoggedIn)
-        self.authenticatedModel = AuthenticatedViewModel(appauth: model.appauth, onLoggedOut: model.onLoggedOut)
     }
     
     var body: some View {
@@ -39,12 +34,10 @@ struct MainView: View {
                 .padding(.leading, 20)
             
             if (!self.model.isAuthenticated) {
-                UnauthenticatedView(model: self.unauthenticatedModel)
+                UnauthenticatedView(model: self.model.getUnauthenticatedViewModel())
             } else {
-                AuthenticatedView(model: self.authenticatedModel)
+                AuthenticatedView(model: self.model.getAuthenticatedViewModel())
             }
         }
-        .onAppear(perform: ApplicationStateManager.load)
-        .onDisappear(perform: ApplicationStateManager.save)
     }
 }
