@@ -142,11 +142,14 @@ class AuthenticatedViewModel: ObservableObject {
                 self.error = nil
 
                 // Initiate the redirect on the UI thread
-                try self.appauth.performEndSessionRedirect(
-                    metadata: self.state.metadata!,
-                    idToken: self.state.idToken!,
-                    viewController: self.getViewController()
-                )
+                try await MainActor.run {
+
+                    try self.appauth.performEndSessionRedirect(
+                        metadata: self.state.metadata!,
+                        idToken: self.state.idToken!,
+                        viewController: self.getViewController()
+                    )
+                }
                 
                 // Wait for the response
                 let _ = try await self.appauth.handleEndSessionResponse()
