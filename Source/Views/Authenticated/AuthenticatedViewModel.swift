@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import SwiftCoroutine
 import AppAuth
 import SwiftJWT
 
@@ -93,74 +92,86 @@ class AuthenticatedViewModel: ObservableObject {
      */
     func refreshAccessToken() {
         
-        DispatchQueue.main.startCoroutine {
+        let metadata = self.state.metadata!
+        let refreshToken = self.state.tokenResponse!.refreshToken!
+        self.error = nil
+        
+        Task {
 
             do {
 
-                let metadata = self.state.metadata!
-                let refreshToken = self.state.tokenResponse!.refreshToken!
-                var tokenResponse: OIDTokenResponse? = nil
-                self.error = nil
-
-                try DispatchQueue.global().await {
-
-                    tokenResponse = try self.appauth.refreshAccessToken(
-                        metadata: metadata,
-                        clientID: self.config.clientID,
-                        refreshToken: refreshToken).await()
-                }
+               let tokenResponse = try await self.appauth.refreshAccessToken(
+                    metadata: metadata,
+                    clientID: self.config.clientID,
+                    refreshToken: refreshToken)
                 
-                if tokenResponse != nil {
-                    self.state.saveTokens(tokenResponse: tokenResponse!)
-                    self.processTokens()
+                await MainActor.run {
                     
-                } else {
-                    self.state.clearTokens()
-                    self.onLoggedOut()
+                    if tokenResponse != nil {
+                        self.state.saveTokens(tokenResponse: tokenResponse!)
+                        self.processTokens()
+                        
+                    } else {
+                        self.state.clearTokens()
+                        self.onLoggedOut()
+                    }
                 }
-                
 
             } catch {
                 
-                let appError = error as? ApplicationError
-                if appError != nil {
-                    self.error = appError!
+                await MainActor.run {
+                    
+                    let appError = error as? ApplicationError
+                    if appError != nil {
+                        self.error = appError!
+                    }
                 }
             }
         }
     }
-    
+
     /*
      * Run the end session redirect and handle the response
      */
     func startLogout() {
 
-        DispatchQueue.main.startCoroutine {
+        Task {
 
             do {
 
                 self.error = nil
 
+                // Initiate the redirect on the UI thread
                 try self.appauth.performEndSessionRedirect(
                     metadata: self.state.metadata!,
                     idToken: self.state.idToken!,
                     viewController: self.getViewController()
-                ).await()
+                )
+                
+                // Wait for the response
+                let _ = try await self.appauth.handleEndSessionResponse()
 
-                self.state.clearTokens()
-                self.onLoggedOut()
+                // Then update state on the UI thread
+                await MainActor.run {
+                    self.state.clearTokens()
+                    self.onLoggedOut()
+                }
 
             } catch {
                 
-                let appError = error as? ApplicationError
-                if appError != nil {
-                    self.error = appError!
+                // Handle errors on the UI thread
+                await MainActor.run {
+                    let appError = error as? ApplicationError
+                    if appError != nil {
+                        self.error = appError!
+                    }
                 }
             }
         }
     }
     
     private func getViewController() -> UIViewController {
-        return UIApplication.shared.windows.first!.rootViewController!
+        let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        return scene!.keyWindow!.rootViewController!
     }
 }

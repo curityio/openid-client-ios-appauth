@@ -15,12 +15,13 @@
 //
 
 import AppAuth
-import SwiftCoroutine
 
 class AppAuthHandler {
     
     private let config: ApplicationConfig
     private var userAgentSession: OIDExternalUserAgentSession?
+    private var loginResponseHandler: LoginResponseHandler?
+    private var logoutResponseHandler: LogoutResponseHandler?
     
     init(config: ApplicationConfig) {
         self.config = config
@@ -30,32 +31,27 @@ class AppAuthHandler {
     /*
      * Get OpenID Connect endpoints
      */
-    func fetchMetadata() throws -> CoFuture<OIDServiceConfiguration> {
+    func fetchMetadata() async throws -> OIDServiceConfiguration {
         
-        let promise = CoPromise<OIDServiceConfiguration>()
+        let issuerUri = try self.config.getIssuerUri()
         
-        let (issuerUrl, parseError) = self.config.getIssuerUri()
-        if issuerUrl == nil {
-            promise.fail(parseError!)
-            return promise
-        }
-
-        OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUrl!) { metadata, ex in
-
-            if metadata != nil {
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            OIDAuthorizationService.discoverConfiguration(forIssuer: issuerUri) { metadata, error in
                 
-                Logger.info(data: "Metadata retrieved successfully")
-                Logger.debug(data: metadata!.description)
-                promise.success(metadata!)
-
-            } else {
-
-                let error = self.createAuthorizationError(title: "Metadata Download Error", ex: ex)
-                promise.fail(error)
+                if metadata != nil {
+                    
+                    Logger.info(data: "Metadata retrieved successfully")
+                    Logger.debug(data: metadata!.description)
+                    continuation.resume(returning: metadata!)
+                    
+                } else {
+                    
+                    let error = self.createAuthorizationError(title: "Metadata Download Error", ex: error)
+                    continuation.resume(throwing: error)
+                }
             }
         }
-        
-        return promise
     }
 
     /*
@@ -65,15 +61,9 @@ class AppAuthHandler {
     func performAuthorizationRedirect(
         metadata: OIDServiceConfiguration,
         clientID: String,
-        viewController: UIViewController) -> CoFuture<OIDAuthorizationResponse?> {
+        viewController: UIViewController) throws {
         
-        let promise = CoPromise<OIDAuthorizationResponse?>()
-        
-        let (redirectUri, parseError) = self.config.getRedirectUri()
-        if redirectUri == nil {
-            promise.fail(parseError!)
-            return promise
-        }
+        let redirectUri = try self.config.getRedirectUri()
 
         // Use acr_values to select a particular authentication method at runtime
         let extraParams = [String: String]()
@@ -85,77 +75,71 @@ class AppAuthHandler {
             clientId: clientID,
             clientSecret: nil,
             scopes: scopesArray,
-            redirectURL: redirectUri!,
+            redirectURL: redirectUri,
             responseType: OIDResponseTypeCode,
             additionalParameters: extraParams)
 
         let userAgent = OIDExternalUserAgentIOS(presenting: viewController)
-        self.userAgentSession = OIDAuthorizationService.present(request, externalUserAgent: userAgent!) { response, ex in
-            
-            if response != nil {
-                
-                Logger.info(data: "Authorization response received successfully")
-                let code = response!.authorizationCode == nil ? "" : response!.authorizationCode!
-                let state = response!.state == nil ? "" : response!.state!
-                Logger.debug(data: "CODE: \(code), STATE: \(state)")
-
-                promise.success(response!)
-
-            } else {
-                
-                if ex != nil && self.isUserCancellationErrorCode(ex: ex!) {
-                    
-                    Logger.info(data: "User cancelled the ASWebAuthenticationSession window")
-                    promise.success(nil)
-
-                } else {
-
-                    
-                    let error = self.createAuthorizationError(title: "Authorization Request Error", ex: ex)
-                    promise.fail(error)
-                }
-            }
-            
-            self.userAgentSession = nil
-        }
-        
-        return promise
+        self.loginResponseHandler = LoginResponseHandler()
+        self.userAgentSession = OIDAuthorizationService.present(
+            request,
+            externalUserAgent: userAgent!,
+            callback: self.loginResponseHandler!.callback)
     }
     
     /*
+     * Finish processing, which occurs on a worker thread
+     */
+    func handleAuthorizationResponse() async throws -> OIDAuthorizationResponse? {
+        
+        do {
+            
+            let response = try await self.loginResponseHandler!.waitForCallback()
+            self.loginResponseHandler = nil
+            return response
+
+        } catch {
+            
+            self.loginResponseHandler = nil
+            if (self.isUserCancellationErrorCode(ex: error)) {
+                return nil
+            }
+            
+            throw self.createAuthorizationError(title: "Authorization Request Error", ex: error)
+        }
+    }
+
+    /*
      * Handle the authorization response, including the user closing the Chrome Custom Tab
      */
-    func redeemCodeForTokens(
-        clientID: String,
-        authResponse: OIDAuthorizationResponse) -> CoFuture<OIDTokenResponse> {
+    func redeemCodeForTokens(clientID: String, authResponse: OIDAuthorizationResponse) async throws -> OIDTokenResponse {
 
-        let promise = CoPromise<OIDTokenResponse>()
-
-        let extraParams = [String: String]()
-        let request = authResponse.tokenExchangeRequest(withAdditionalParameters: extraParams)
-
-        OIDAuthorizationService.perform(
-            request!,
-            originalAuthorizationResponse: authResponse) { tokenResponse, ex in
-
-            if tokenResponse != nil {
-
-                Logger.info(data: "Authorization code grant response received successfully")
-                let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
-                let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
-                let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
-                Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
-
-                promise.success(tokenResponse!)
-
-            } else {
-
-                let error = self.createAuthorizationError(title: "Authorization Response Error", ex: ex)
-                promise.fail(error)
+        try await withCheckedThrowingContinuation { continuation in
+            
+            let extraParams = [String: String]()
+            let request = authResponse.tokenExchangeRequest(withAdditionalParameters: extraParams)
+            
+            OIDAuthorizationService.perform(
+                request!,
+                originalAuthorizationResponse: authResponse) { tokenResponse, ex in
+                    
+                if tokenResponse != nil {
+                    
+                    Logger.info(data: "Authorization code grant response received successfully")
+                    let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
+                    let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
+                    let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
+                    Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
+                    
+                    continuation.resume(returning: tokenResponse!)
+                    
+                } else {
+                    
+                    let error = self.createAuthorizationError(title: "Authorization Response Error", ex: ex)
+                    continuation.resume(throwing: error)
+                }
             }
         }
-        
-        return promise
     }
 
     /*
@@ -164,9 +148,7 @@ class AppAuthHandler {
     func refreshAccessToken(
             metadata: OIDServiceConfiguration,
             clientID: String,
-            refreshToken: String) -> CoFuture<OIDTokenResponse?> {
-        
-        let promise = CoPromise<OIDTokenResponse?>()
+            refreshToken: String) async throws -> OIDTokenResponse? {
         
         let request = OIDTokenRequest(
             configuration: metadata,
@@ -179,35 +161,36 @@ class AppAuthHandler {
             refreshToken: refreshToken,
             codeVerifier: nil,
             additionalParameters: nil)
-        
-        OIDAuthorizationService.perform(request) { tokenResponse, ex in
 
-            if tokenResponse != nil {
-
-                Logger.info(data: "Refresh token code grant response received successfully")
-                let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
-                let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
-                let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
-                Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
-
-                promise.success(tokenResponse!)
-
-            } else {
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<OIDTokenResponse?, Error>) -> Void in
+            
+            OIDAuthorizationService.perform(request) { tokenResponse, ex in
                 
-                if ex != nil && self.isRefreshTokenExpiredErrorCode(ex: ex!) {
+                if tokenResponse != nil {
                     
-                    Logger.info(data: "Refresh token expired and the user must re-authenticate")
-                    promise.success(nil)
-
+                    Logger.info(data: "Refresh token code grant response received successfully")
+                    let accessToken = tokenResponse!.accessToken == nil ? "" : tokenResponse!.accessToken!
+                    let refreshToken = tokenResponse!.refreshToken == nil ? "" : tokenResponse!.refreshToken!
+                    let idToken = tokenResponse!.idToken == nil ? "" : tokenResponse!.idToken!
+                    Logger.debug(data: "AT: \(accessToken), RT: \(refreshToken), IDT: \(idToken)" )
+                    
+                    continuation.resume(returning: tokenResponse!)
+                    
                 } else {
+                    
+                    if ex != nil && self.isRefreshTokenExpiredErrorCode(ex: ex!) {
+                        
+                        Logger.info(data: "Refresh token expired and the user must re-authenticate")
+                        continuation.resume(returning: nil)
 
-                    let error = self.createAuthorizationError(title: "Refresh Token Error", ex: ex)
-                    promise.fail(error)
+                    } else {
+                        
+                        let error = self.createAuthorizationError(title: "Refresh Token Error", ex: ex)
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
         }
-        
-        return promise
     }
 
     /*
@@ -215,48 +198,46 @@ class AppAuthHandler {
      */
     func performEndSessionRedirect(metadata: OIDServiceConfiguration,
                                    idToken: String,
-                                   viewController: UIViewController) -> CoFuture<Void> {
+                                   viewController: UIViewController) throws {
         
-        let promise = CoPromise<Void>()
         let extraParams = [String: String]()
 
-        let (postLogoutRedirectUri, parseError) = self.config.getPostLogoutRedirectUri()
-        if postLogoutRedirectUri == nil {
-            promise.fail(parseError!)
-            return promise
-        }
+        let postLogoutRedirectUri = try self.config.getPostLogoutRedirectUri()
         
         let request = OIDEndSessionRequest(
             configuration: metadata,
             idTokenHint: idToken,
-            postLogoutRedirectURL: postLogoutRedirectUri!,
+            postLogoutRedirectURL: postLogoutRedirectUri,
             additionalParameters: extraParams)
-
+        
         let userAgent = OIDExternalUserAgentIOS(presenting: viewController)
-        self.userAgentSession = OIDAuthorizationService.present(request, externalUserAgent: userAgent!) { response, ex in
+        self.logoutResponseHandler = LogoutResponseHandler()
+        self.userAgentSession = OIDAuthorizationService.present(
+            request,
+            externalUserAgent: userAgent!,
+            callback: self.logoutResponseHandler!.callback)
+    }
+    
+    /*
+     * Finish processing, which occurs on a worker thread
+     */
+    func handleEndSessionResponse() async throws -> OIDEndSessionResponse? {
+        
+        do {
             
-            if ex != nil {
-                
-                if self.isUserCancellationErrorCode(ex: ex!) {
-                
-                    Logger.info(data: "User cancelled the ASWebAuthenticationSession window")
-                    promise.success(Void())
+            let response = try await self.logoutResponseHandler!.waitForCallback()
+            self.logoutResponseHandler = nil
+            return response
 
-                } else {
-
-                    let error = self.createAuthorizationError(title: "End Session Error", ex: ex)
-                    promise.fail(error)
-                }
-
-            } else {
-                
-                promise.success(Void())
+        } catch {
+            
+            self.logoutResponseHandler = nil
+            if (self.isUserCancellationErrorCode(ex: error)) {
+                return nil
             }
             
-            self.userAgentSession = nil
+            throw self.createAuthorizationError(title: "Logout Request Error", ex: error)
         }
-        
-        return promise
     }
 
     /*
