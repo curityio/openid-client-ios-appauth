@@ -95,8 +95,4 @@ struct AuthenticatedView: View {
     func onViewCreated() {
         self.model.processTokens()
     }
-        
-    func getViewController() -> UIViewController {
-        return UIApplication.shared.windows.first!.rootViewController!
-    }
 }

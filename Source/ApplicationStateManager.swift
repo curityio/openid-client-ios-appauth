@@ -15,7 +15,6 @@
 //
 
 import AppAuth
-import SwiftKeychainWrapper
 
 class ApplicationStateManager {
     
@@ -36,7 +35,7 @@ class ApplicationStateManager {
      */
     func saveTokens(tokenResponse: OIDTokenResponse) {
         
-        // When refreshing tokens, the Curity Identity Server does not issue a new ID token
+        // When refreshing tokens, the Curity Identity Server does not issue a new ID token by default
         // The AppAuth code does not allow us to update the token response with the original ID token
         // Therefore we store the ID token separately
         if (tokenResponse.idToken != nil) {
@@ -52,8 +51,6 @@ class ApplicationStateManager {
     func clearTokens() {
         self.authState = OIDAuthState(authorizationResponse: nil, tokenResponse: nil, registrationResponse: nil)
         self.idToken = nil
-        
-        // KeychainWrapper.standard.removeObject(forKey: self.storageKey + ".token")
     }
     
     var metadata: OIDServiceConfiguration? {

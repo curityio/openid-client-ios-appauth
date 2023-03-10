@@ -11,7 +11,6 @@
 		280AFDE42685D4BD0063EAD6 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDE32685D4BD0063EAD6 /* CustomButtonStyle.swift */; };
 		280AFDEA2685EA180063EAD6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 280AFDE92685EA180063EAD6 /* Localizable.strings */; };
 		280AFDED2685EB9C0063EAD6 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 280AFDEC2685EB9C0063EAD6 /* AppAuth */; };
-		280AFDF02685EBB90063EAD6 /* SwiftCoroutine in Frameworks */ = {isa = PBXBuildFile; productRef = 280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */; };
 		280AFDF32685EDE40063EAD6 /* AppAuthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF22685EDE40063EAD6 /* AppAuthHandler.swift */; };
 		280AFDF72685F09E0063EAD6 /* UnauthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF62685F09E0063EAD6 /* UnauthenticatedViewModel.swift */; };
 		280AFDFA2685F2BC0063EAD6 /* ApplicationConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFDF92685F2BC0063EAD6 /* ApplicationConfig.swift */; };
@@ -26,8 +25,9 @@
 		280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */; };
 		2814AFED270ED9C60009BDA6 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 2814AFEC270ED9C60009BDA6 /* config.json */; };
 		2814AFEF270EDA3D0009BDA6 /* ApplicationConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2814AFEE270EDA3D0009BDA6 /* ApplicationConfigLoader.swift */; };
+		2823D2CA299FE0A8001E6889 /* LoginResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2823D2C9299FE0A8001E6889 /* LoginResponseHandler.swift */; };
+		2823D2CC299FE0AD001E6889 /* LogoutResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2823D2CB299FE0AD001E6889 /* LogoutResponseHandler.swift */; };
 		2858770F268B17F70036D88C /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = 2858770E268B17F70036D88C /* SwiftJWT */; };
-		28587714268C542B0036D88C /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 28587713268C542B0036D88C /* SwiftKeychainWrapper */; };
 		28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */; };
 		28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B6C4EE2685CC3E00241CE3 /* MainView.swift */; };
 		28B6C4F12685CC3F00241CE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B6C4F02685CC3F00241CE3 /* Assets.xcassets */; };
@@ -51,6 +51,8 @@
 		280AFE12268863900063EAD6 /* AuthenticatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedViewModel.swift; sourceTree = "<group>"; };
 		2814AFEC270ED9C60009BDA6 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		2814AFEE270EDA3D0009BDA6 /* ApplicationConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationConfigLoader.swift; sourceTree = "<group>"; };
+		2823D2C9299FE0A8001E6889 /* LoginResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponseHandler.swift; sourceTree = "<group>"; };
+		2823D2CB299FE0AD001E6889 /* LogoutResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogoutResponseHandler.swift; sourceTree = "<group>"; };
 		28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppAuthDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		28B6C4EE2685CC3E00241CE3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -64,8 +66,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				280AFDED2685EB9C0063EAD6 /* AppAuth in Frameworks */,
-				280AFDF02685EBB90063EAD6 /* SwiftCoroutine in Frameworks */,
-				28587714268C542B0036D88C /* SwiftKeychainWrapper in Frameworks */,
 				2858770F268B17F70036D88C /* SwiftJWT in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -169,6 +169,8 @@
 				28B6C4EC2685CC3E00241CE3 /* DemoApp.swift */,
 				280AFDF22685EDE40063EAD6 /* AppAuthHandler.swift */,
 				280AFE0B26863F010063EAD6 /* ApplicationStateManager.swift */,
+				2823D2C9299FE0A8001E6889 /* LoginResponseHandler.swift */,
+				2823D2CB299FE0AD001E6889 /* LogoutResponseHandler.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -191,9 +193,7 @@
 			name = AppAuthDemo;
 			packageProductDependencies = (
 				280AFDEC2685EB9C0063EAD6 /* AppAuth */,
-				280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */,
 				2858770E268B17F70036D88C /* SwiftJWT */,
-				28587713268C542B0036D88C /* SwiftKeychainWrapper */,
 			);
 			productName = client;
 			productReference = 28B6C4E92685CC3E00241CE3 /* AppAuthDemo.app */;
@@ -224,9 +224,7 @@
 			mainGroup = 28B6C4E02685CC3E00241CE3;
 			packageReferences = (
 				280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
-				280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */,
 				2858770D268B17F70036D88C /* XCRemoteSwiftPackageReference "Swift-JWT" */,
-				28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
 			);
 			productRefGroup = 28B6C4EA2685CC3E00241CE3 /* Products */;
 			projectDirPath = "";
@@ -256,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				280AFE112687201A0063EAD6 /* AuthenticatedView.swift in Sources */,
+				2823D2CC299FE0AD001E6889 /* LogoutResponseHandler.swift in Sources */,
 				28B6C4EF2685CC3E00241CE3 /* MainView.swift in Sources */,
 				280AFE13268863900063EAD6 /* AuthenticatedViewModel.swift in Sources */,
 				280AFE002685FD670063EAD6 /* ApplicationError.swift in Sources */,
@@ -268,6 +267,7 @@
 				280AFE08268620240063EAD6 /* ErrorView.swift in Sources */,
 				28B6C4ED2685CC3E00241CE3 /* DemoApp.swift in Sources */,
 				280AFE0A268624E70063EAD6 /* TextStyles.swift in Sources */,
+				2823D2CA299FE0A8001E6889 /* LoginResponseHandler.swift in Sources */,
 				280AFDFA2685F2BC0063EAD6 /* ApplicationConfig.swift in Sources */,
 				280AFDFD2685F4060063EAD6 /* MainViewModel.swift in Sources */,
 				280AFE0C26863F010063EAD6 /* ApplicationStateManager.swift in Sources */,
@@ -329,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -384,7 +384,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -403,7 +403,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,7 +424,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -465,15 +465,7 @@
 			repositoryURL = "https://github.com/openid/AppAuth-iOS";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
-			};
-		};
-		280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/belozierov/SwiftCoroutine";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.11;
+				minimumVersion = 1.6.0;
 			};
 		};
 		2858770D268B17F70036D88C /* XCRemoteSwiftPackageReference "Swift-JWT" */ = {
@@ -484,14 +476,6 @@
 				minimumVersion = 3.6.200;
 			};
 		};
-		28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -500,20 +484,10 @@
 			package = 280AFDEB2685EB9C0063EAD6 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
 			productName = AppAuth;
 		};
-		280AFDEF2685EBB90063EAD6 /* SwiftCoroutine */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 280AFDEE2685EBB90063EAD6 /* XCRemoteSwiftPackageReference "SwiftCoroutine" */;
-			productName = SwiftCoroutine;
-		};
 		2858770E268B17F70036D88C /* SwiftJWT */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2858770D268B17F70036D88C /* XCRemoteSwiftPackageReference "Swift-JWT" */;
 			productName = SwiftJWT;
-		};
-		28587713268C542B0036D88C /* SwiftKeychainWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 28587712268C542B0036D88C /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */;
-			productName = SwiftKeychainWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

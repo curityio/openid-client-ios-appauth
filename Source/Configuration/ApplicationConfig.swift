@@ -34,36 +34,33 @@ struct ApplicationConfig: Decodable {
         self.scope = ""
     }
     
-    func getIssuerUri() -> (URL?, Error?) {
+    func getIssuerUri() throws -> URL {
         
         guard let url = URL(string: self.issuer) else {
 
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The issuer URI could not be parsed")
-            return (nil, error)
+            throw ApplicationError(title: "Invalid Configuration Error", description: "The issuer URI could not be parsed")
         }
         
-        return (url, nil)
+        return url
     }
 
-    func getRedirectUri() -> (URL?, Error?) {
+    func getRedirectUri() throws -> URL {
         
         guard let url = URL(string: self.redirectUri) else {
 
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The redirect URI could not be parsed")
-            return (nil, error)
+            throw ApplicationError(title: "Invalid Configuration Error", description: "The redirect URI could not be parsed")
         }
         
-        return (url, nil)
+        return url
     }
-    
-    func getPostLogoutRedirectUri() -> (URL?, Error?) {
+
+    func getPostLogoutRedirectUri() throws -> URL {
         
         guard let url = URL(string: self.postLogoutRedirectUri) else {
 
-            let error = ApplicationError(title: "Invalid Configuration Error", description: "The post logout redirect URI could not be parsed")
-            return (nil, error)
+            throw ApplicationError(title: "Invalid Configuration Error", description: "The post logout redirect URI could not be parsed")
         }
         
-        return (url, nil)
+        return url
     }
 }
